@@ -9,7 +9,7 @@ import warnings
 PROJECT_ROOT = os.path.abspath(os.path.dirname(__file__))
 
 ADMINS = (
-    ('Roman', 'r.vaseev@crystalnix.com'),
+    ('admin', 'r.usynin@crystalnix.com')
 )
 
 DOMAIN = '127.0.0.1:8000'
@@ -50,13 +50,13 @@ THUMBNAIL_ALIASES = {
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
-        'NAME': 'postgres',                      # Or path to database file if using sqlite3.
+        'NAME': 'dbe6mv9fdteflq',                      # Or path to database file if using sqlite3.
         # The following settings are not used with sqlite3:
-        'USER': 'postgres',
-        'PASSWORD': 'admin',
-        'HOST': 'localhost',                      # Empty for localhost through domain sockets or '127.0.0.1' for localhost through TCP.
+        'USER': 'riatxglemgeygz',
+        'PASSWORD': 'etpg6fqDP6RAhuZMdmB0WCulqM',
+        'HOST': 'ec2-54-197-238-239.compute-1.amazonaws.com',                      # Empty for localhost through domain sockets or '127.0.0.1' for localhost through TCP.
 
-        'PORT': '5433',                           # Set to empty string for default.
+        'PORT': '5432',                           # Set to empty string for default.
         'OPTIONS': {
             'autocommit': True,
         }
@@ -69,7 +69,7 @@ PASSWORD_HASHERS = (
 
 # Hosts/domain names that are valid for this site; required if DEBUG is False
 # See https://docs.djangoproject.com/en/1.5/ref/settings/#allowed-hosts
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['localhost']
 
 EMAIL_USE_TLS = True
 
@@ -271,3 +271,7 @@ LOGGING = {
 
 #DATABASES['default'] =  dj_database_url.config(default='postgres://user:pass@localhost/dbname')
 
+try:
+    from local_settings import *
+except ImportError:
+    pass
