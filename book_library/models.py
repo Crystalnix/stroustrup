@@ -13,6 +13,11 @@ from django.core.files.base import ContentFile
 from django.core.urlresolvers import reverse
 from django.conf import settings
 
+
+class Library(models.Model):
+    name = models.CharField(max_length=30)
+
+
 class Client_Story_Record(models.Model):
     records = models.Manager()
 
@@ -72,6 +77,7 @@ class Book(models.Model):
     e_version_exists = models.BooleanField(default=False, verbose_name="e version")
     book_rating = models.ManyToManyField('Book_Rating', null=None, default=None, blank=True)#SpaT_eedition
     comments = models.ManyToManyField('Book_Comment', related_name='books', default=None, blank=True) #SpaT_edition
+    library = models.ForeignKey(Library, null=True)
 
     class Meta:
         ordering = ['title']
@@ -172,4 +178,8 @@ class Request_Return(models.Model):
     book = models.ForeignKey(Book)
     time_request = models.DateTimeField(auto_now_add=True)
     processing_time = models.DateTimeField(blank=True, null=True)
+
+
+
+    
 
