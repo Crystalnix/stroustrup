@@ -15,8 +15,12 @@ from django.conf import settings
 
 
 class Library(models.Model):
+    libraries = models.Manager()
+
     name = models.CharField(max_length=30)
 
+    def __unicode__(self):
+        return self.name
 
 class Client_Story_Record(models.Model):
     records = models.Manager()
@@ -77,7 +81,7 @@ class Book(models.Model):
     e_version_exists = models.BooleanField(default=False, verbose_name="e version")
     book_rating = models.ManyToManyField('Book_Rating', null=None, default=None, blank=True)#SpaT_eedition
     comments = models.ManyToManyField('Book_Comment', related_name='books', default=None, blank=True) #SpaT_edition
-    library = models.ForeignKey(Library, null=True)
+    library = models.ForeignKey(Library, verbose_name='Library', blank=True, null=True)
 
     class Meta:
         ordering = ['title']

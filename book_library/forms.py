@@ -79,12 +79,13 @@ class BookForm(ModelForm):
 
     class Meta:
         model = Book
-        exclude = ['busy', 'users', 'authors', 'tags', 'book_rating', 'comments']
+        exclude = ['busy', 'users', 'authors', 'tags', 'book_rating', 'comments', 'library']
 
-    def save(self, commit=True):
+    def save(self, library, commit=True):
         authors = self.cleaned_data['authors_names']
         tags = self.cleaned_data['tag_field']
         book = super(BookForm, self).save(commit)
+        book.library = library
         book.authors.clear()
         book.tags.clear()
         for author in authors:
@@ -116,7 +117,7 @@ class BookForm(ModelForm):
                 new_tag, created = Book_Tag.tags.get_or_create(tag=_tag)
             book.tags.add(new_tag)
 
-        return book
+        return book.save()
 
 
 class Book_TagForm(ModelForm):

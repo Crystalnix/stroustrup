@@ -14,5 +14,5 @@ urlpatterns = patterns('',
         name='change'),
     url(r'^users/$', UsersView.as_view(template_name='users_list.html',),
         name='all'),
-
+    url(r'^library/$')
     )

@@ -1,6 +1,4 @@
 from django.conf.urls import patterns, url
-from book_library.models import Author, Book_Tag
-
 from book_library.views import *
 
 urlpatterns = patterns('',

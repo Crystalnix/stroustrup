@@ -46,6 +46,13 @@ class BookView(LoginRequiredView, DetailView, FormView):
     form_class = Book_CommentForm
     object = None
 
+    def get(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        if self.object.library != self.request.user.get_profile().library:
+            return HttpResponseRedirect(reverse('books:list'))
+        context = self.get_context_data(object=self.object)
+        return self.render_to_response(context)
+
     def get_context_data(self, **kwargs):
         context = {}
         context['book'] = self.get_object()
@@ -71,24 +78,24 @@ class AuthorView(LoginRequiredView, DetailView):
     model = Author
 
 
-class BookAdd(StaffOnlyView, CreateView):
-    model = Book
+class BookAdd(StaffOnlyView, FormView):
     form_class = BookForm
     object = None
+
+    def form_valid(self, form):
+        form.save(self.request.user.get_profile().library)
+        return HttpResponseRedirect(reverse("books:list"))
 
 
 class BookUpdate(StaffOnlyView, UpdateView):
     model = Book
     form_class = Book_UpdateForm
 
+    def form_valid(self, form):
+        form.save(self.request.user.get_profile().library)
+        return HttpResponseRedirect(reverse("books:list"))
 
-class Delete(StaffOnlyView, DeleteView):
-
-    def get(self, request, *args, **kwargs):
-        return super(Delete, self).get(self, request, *args, **kwargs)
-
-
-class DeleteBook(Delete):
+class DeleteBook(StaffOnlyView, DeleteView):
     model = Book
 
 
@@ -100,7 +107,7 @@ def take_book_view(request, number, *args, **kwargs):
         book.take_by(client)
         book.save()
         return HttpResponse(content=json.dumps({'message': 'Book taken'}))
-    return HttpResponseRedirect(reverse('book:list'))
+    return HttpResponseRedirect(reverse('books:list'))
 
 
 @login_required
@@ -123,7 +130,7 @@ class BookListView(PaginationMixin, LoginRequiredView, ListView):
     paginate_by = BOOKS_ON_PAGE
 
     def get_queryset(self):
-        self.queryset = Book.books.all()
+        self.queryset = Book.books.filter(library=self.request.user.get_profile().library)
         try:
             self.busy = self.request.GET['busy']
         except KeyError:
@@ -212,10 +219,11 @@ class UsersView(PaginationMixin, LoginRequiredView, ListView):
     model = User
     page = 1
     paginate_by = USERS_ON_PAGE
-    queryset = User.objects.all()
 
-    def get(self, request, *args, **kwargs):
-        return super(UsersView, self).get(request, *args, **kwargs)
+    def get_queryset(self):
+        self.queryset = User.objects.filter(profile__library = self.request.user.get_profile().library)
+
+
 
     def get_context_data(self, **kwargs):
         context = {}

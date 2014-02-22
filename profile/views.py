@@ -12,6 +12,13 @@ import forms
 class ProfileView(LoginRequiredView, DetailView):
     model = User
 
+    def get(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        if self.object.get_profile().library != self.request.user.get_profile().library:
+            return HttpResponseRedirect(reverse('books:users'))
+        context = self.get_context_data(object=self.object)
+        return self.render_to_response(context)
+
     def get_context_data(self, object):
         context = {'profile': object, 'books': object.get_users_books()}
         return super(ProfileView, self).get_context_data(**context)
@@ -37,10 +44,3 @@ def profile_change(request):
         context = {'form': form}
         return TemplateResponse(request, template_name, context)
 
-
-class UsersView(LoginRequiredView, ListView):
-    model = User
-    queryset = User.objects.all()
-
-    def get(self, request, *args, **kwargs):
-        return super(UsersView, self).get(request, *args, **kwargs)
