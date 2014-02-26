@@ -20,12 +20,20 @@ urlpatterns = patterns('',
                            name='media'),
                        url(r'^admin/', include(admin.site.urls)),
 
-                       url(r'^$', views.main_view, name='mainpage'),
+                       url(r'^$',
+                           views.main_view,
+                           name='mainpage'),
 
-                       url(r'^openid/login/$', 'django_openid_auth.views.login_begin', name='openid-login'),
-                       url(r'^openid/login-complete/$', login_complete, name='openid-complete'),
+                       url(r'^openid/login/$',
+                           'django_openid_auth.views.login_begin',
+                           name='openid-login'),
 
-                       url(r'^profile/', include('profile.urls', namespace="profile")),
+                       url(r'^openid/login-complete/$',
+                           login_complete,
+                           name='openid-complete'),
+
+                       url(r'^profile/',
+                           include('profile.urls', namespace="profile")),
 
                        url(r'^landing_page/$', LandingPage.as_view(template_name='landing_page.html'), name='landing_page'),
 

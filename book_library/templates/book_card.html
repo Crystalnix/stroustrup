@@ -27,7 +27,7 @@
 {% for book in books %}
 <h1 style="border-right:1px solid black">
         <img class="img" src="{{ book.qr_image.url }}" alt="qr" width="150" height="150">
-        <h2 class="media-heading" style="border-right:1px solid black"><b>Company: Crystalnix</b> </h2>
+        <h2 class="media-heading" style="border-right:1px solid black"><b>Library:</b> {{book.library  }} </h2>
         <h2 class="media-heading" style="border-right:1px solid black"><b>ISBN:</b> {{ book.isbn }} </h2>
         <h2 class="media-heading" style="border-right:1px solid black"><b>Title:</b> {{ book.title }} </h2>
         <hr>

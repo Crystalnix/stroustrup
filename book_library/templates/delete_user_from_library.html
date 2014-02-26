@@ -1,0 +1,42 @@
+{% extends 'books_mainpage.html' %}
+{% block title %}Delete book{% endblock %}
+{% block location %}Delete book{% endblock %}
+{% block link_extension %}
+    {% load static %}
+<link rel="stylesheet" href="{% static 'css/book_index.css' %}"/>
+
+{% endblock %}
+
+{% block content %}
+    <div class="col-md-6 col-md-offset-3">
+        <div class="panel panel-warning">
+    {% if user.is_staff %}
+
+
+                <div class="panel-heading">Confirm your action.</div>
+                <div class="panel-body">
+                   <h4>Are you sure that you are want to delete this user from your library?</h4>
+                    <hr/>
+                    <form action="" method="post">{% csrf_token %}
+                        <button type="submit" class="btn btn-lg btn-success">
+                            Yes, i am
+                        </button>
+                        <a class="btn btn-lg  btn-danger" href="javascript: window.history.back()">
+                            No, i've had a doubt about it
+                        </a>
+                    </form>
+                </div>
+
+
+    {% else %}
+        <p class="errorlist row">You aren't staff.</p>
+        <a class="button uibutton" href="javascript: window.history.back()">
+            Fall back
+        </a>
+    {% endif %}
+        </div>
+    </div>
+
+
+{% endblock %}
+

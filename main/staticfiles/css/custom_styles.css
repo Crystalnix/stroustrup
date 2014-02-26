@@ -192,3 +192,6 @@ textarea { resize:none; }
     height: 74px;
 }
 
+.pull-center {
+  text-align: center;
+}

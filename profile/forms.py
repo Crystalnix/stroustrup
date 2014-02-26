@@ -4,7 +4,7 @@ from django.contrib.auth.models import User
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Submit, Field, Button
 from crispy_forms.bootstrap import FormActions
-from profile.models import Profile_addition
+from profile.models import Library
 from django.core.urlresolvers import reverse
 
 
@@ -55,9 +55,5 @@ class ProfileForm(ModelForm):
         return profile
 
 
-class ProfileFormAddition(ModelForm):
-
-    class Meta:
-        model = Profile_addition
 
 

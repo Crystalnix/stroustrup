@@ -24,6 +24,16 @@
     <div class="panel panel-default">
         <div class="panel-heading">
             <span class="glyphicon glyphicon-user"></span> <a class="title"> Profile </a>
+            {% if user.get_profile.is_manager %}
+                <div class="btn-group pull-right">
+                {% if profile.get_profile.is_manager %}
+                        <a type="button" class="btn btn-danger " href="{% url "books:permissions_user" profile.id%}"> Remove permission of manager</a>
+                {% else %}
+                        <a type="button" class="btn btn-success " href="{% url "books:permissions_user" profile.id%}"> Add permission of manager</a>
+                {% endif %}
+            <a type="button" class="btn btn-danger " href="{% url "books:delete_user" profile.id%}">Delete from library</a>
+                </div>
+            {% endif %}
         </div>
         <div class="panel-body">
             <div class="media">
@@ -51,9 +61,15 @@
                     {% endif %}
                 </div>
                 <div class="media-body">
-                    <h4 class="media-heading pull-left"> ID: {{ profile.id }}</h4>
+                    <h4 class="media-heading pull-left"> Username: {{ profile.username }}</h4>
+                    <h4 class="media-heading pull-right"> Status:
+                        {% if profile.get_profile.is_manager %}
+                            Manager
+                        {% else %}
+                            User
+                        {% endif %}
+                    </h4>
 
-                    <h4 class="media-heading pull-right">Username: {{ profile.username }} </h4>
                     <hr/>
                     <h3>
                         Name:
@@ -151,6 +167,11 @@
                             <a href="{% url 'password_change' %}" class="btn btn-primary btn-lg">
                                 Change your password <span class="glyphicon glyphicon-lock"></span>
                             </a>
+                            {% if profile.get_profile.is_manager %}
+                            <a href="{% url 'books:library_change' %}" class="btn btn-primary btn-lg">
+                                Change your library <span class="glyphicon glyphicon-lock"></span>
+                            </a>
+                                {% endif %}
 
                         </div>
                         <a href="{% url 'authorisation:auth_logout' %}" class="btn btn-primary btn-lg pull-right">

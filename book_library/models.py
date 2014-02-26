@@ -22,6 +22,7 @@ class Library(models.Model):
     def __unicode__(self):
         return self.name
 
+
 class Client_Story_Record(models.Model):
     records = models.Manager()
 

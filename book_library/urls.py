@@ -60,4 +60,15 @@ urlpatterns = patterns('',
                        url(r'print/$',
                            PrintQrCodesView.as_view(template_name="print_qr.html"),
                            name='print'),
+                       url(r'^library/$',
+                           'book_library.views.library_change',
+                           name='library_change'),
+                       url(r'^library/(?P<pk>\d+)/delete/$',
+                           DeleteUserFromLibrary.as_view(template_name="delete_user_from_library.html"),
+                           name='delete_user'),
+
+                       url(r'^library/(?P<pk>\d+)/permissions/$',
+                           'book_library.views.add_permissions_for_user',
+                           name='permissions_user')
+
                        )

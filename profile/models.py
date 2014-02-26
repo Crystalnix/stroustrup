@@ -9,7 +9,7 @@ from book_library.models import Library
 class Profile_addition(models.Model):
     user = models.ForeignKey(User, unique=True, related_name='profile')
     is_manager = models.BooleanField(default=False)
-    avatar = ThumbnailerImageField(upload_to='user_avatar')
+    avatar = ThumbnailerImageField(upload_to='user_avatar', blank=True)
     library = models.ForeignKey(Library, verbose_name='Library', blank=True, null=True)
 
 

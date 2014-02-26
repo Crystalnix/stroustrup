@@ -4,8 +4,8 @@ from django import forms
 from django.core.exceptions import ValidationError
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Submit, Field
-from crispy_forms.bootstrap import PrependedText, InlineField
-from book_library.models import Book, Book_Tag, Author, Book_Request, Book_Comment, Book_Rating
+from crispy_forms.bootstrap import PrependedText, InlineField, FormActions
+from book_library.models import Book, Book_Tag, Author, Book_Request, Book_Comment, Book_Rating, Library
 
 
 class NameField(forms.CharField):
@@ -245,3 +245,32 @@ class PrintQRcodesForm(forms.Form):
     helper.layout = Layout(Field('books', wrapper_class="form-group"),
                            Submit('print', 'Print!', css_class="btn btn-lg btn-block btn-success form-group"))
 
+    def __init__(self, *args, **kwargs):
+        super(PrintQRcodesForm, self).__init__(*args, **kwargs)
+        if args:
+            self.fields['books'].initial = Book.books.filter(library=args[0])
+
+
+class LibraryForm(ModelForm):
+
+    name = forms.TextInput(attrs={'placeholder': ' Name of library'})
+
+    class Meta:
+        model = Library
+
+    helper = FormHelper()
+    helper.form_class = 'form-signin'
+    helper.form_show_labels = False
+    helper.layout = Layout(Field('name'),
+                           FormActions(Submit('save_changes_profile', 'Save', css_class='btn-lg btn-block btn-success')))
+
+    def __init__(self, library, *args, **kwargs):
+        self.library = library
+        super(LibraryForm, self).__init__(*args, **kwargs)
+        self.fields['name'].initial = self.library.name
+
+    def save(self, commit=True):
+        library = self.library
+        library.name = self.cleaned_data['name']
+        library.save()
+        return library

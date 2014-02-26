@@ -37,7 +37,7 @@
                 <li id="books_bar"><a href="{% url 'books:list' %}">Books Page</a></li>
                 <li id="users_bar"><a href="{% url 'books:users'  %}">Users Page</a></li>
                 <li id="request_bar"><a href="{% url 'books:request'  %}">Request book from shop</a></li>
-                {% if user.is_staff %}
+                {% if user.get_profile.is_manager %}
                 <li id="add_bar"><a href="{%  url 'books:add' %}">Add book in Library</a></li>
                 <li id="print_bar"><a href="{% url 'books:print' %}">Print QR codes</a></li>
                 {% endif %}

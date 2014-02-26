@@ -1,4 +1,4 @@
-from django.views.generic import DetailView, ListView
+from django.views.generic import DetailView
 from django.contrib.auth.models import User
 from django.template.response import TemplateResponse
 from django.http import HttpResponseRedirect
@@ -43,4 +43,6 @@ def profile_change(request):
         form = profile_change_form(user=request.user)
         context = {'form': form}
         return TemplateResponse(request, template_name, context)
+
+
 

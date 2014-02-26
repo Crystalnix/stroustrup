@@ -21,12 +21,20 @@ from urllib2 import urlopen
 from urlparse import urlparse
 from amazon.api import AmazonAPI
 from re import search
+from django.template.response import TemplateResponse
+from django.views.decorators.csrf import csrf_protect
 
 
 class StaffOnlyView(object):
     @method_decorator(user_passes_test(lambda u: u.is_staff))
     def dispatch(self, request, *args, **kwargs):
         return super(StaffOnlyView, self).dispatch(request, *args, **kwargs)
+
+
+class ManagerOnlyView(object):
+    @method_decorator(user_passes_test(lambda u: u.get_profile().is_manager))
+    def dispatch(self, request, *args, **kwargs):
+        return super(ManagerOnlyView, self).dispatch(request, *args, **kwargs)
 
 
 class LoginRequiredView(object):
@@ -78,7 +86,7 @@ class AuthorView(LoginRequiredView, DetailView):
     model = Author
 
 
-class BookAdd(StaffOnlyView, FormView):
+class BookAdd(ManagerOnlyView, FormView):
     form_class = BookForm
     object = None
 
@@ -91,13 +99,26 @@ class BookUpdate(StaffOnlyView, UpdateView):
     model = Book
     form_class = Book_UpdateForm
 
+    def get(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        if self.object.library != self.request.user.get_profile().library:
+            return HttpResponseRedirect(reverse('books:list'))
+        return super(BookUpdate, self).get(request, *args, **kwargs)
+
     def form_valid(self, form):
         form.save(self.request.user.get_profile().library)
         return HttpResponseRedirect(reverse("books:list"))
 
+
 class DeleteBook(StaffOnlyView, DeleteView):
     model = Book
 
+    def get(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        if self.object.library != self.request.user.get_profile().library:
+            return HttpResponseRedirect(reverse('books:list'))
+        context = self.get_context_data(object=self.object)
+        return self.render_to_response(context)
 
 @login_required
 def take_book_view(request, number, *args, **kwargs):
@@ -361,7 +382,7 @@ def rating_post(request, *args, **kwargs):
     elem.save()
     book.book_rating.add(elem)
     return HttpResponse(content=json.dumps({
-        'status':'OK',
+        'status': 'OK',
         'score': request.GET['score'],
         'votes': request.GET['votes'],
         'val': common,
@@ -369,8 +390,13 @@ def rating_post(request, *args, **kwargs):
         }, sort_keys=True))
 
 
-class PrintQrCodesView(LoginRequiredView, FormView):
+class PrintQrCodesView(ManagerOnlyView, FormView):
     form_class = PrintQRcodesForm
+
+    def get(self, request, *args, **kwargs):
+        library = self.request.user.get_profile().library
+        form = self.form_class(library)
+        return self.render_to_response(self.get_context_data(form=form))
 
     def form_valid(self, form):
         data = form.cleaned_data['books']
@@ -379,3 +405,57 @@ class PrintQrCodesView(LoginRequiredView, FormView):
         result = generate_pdf('book_card.html', file_object=resp, context=context)
         return result
 
+@csrf_protect
+@login_required
+def library_change(request):
+    template_name = 'library_change.html'
+    profile_change_form = LibraryForm
+    post_change_redirect = reverse("profile:profile", args=str(request.user.pk))
+    if request.user.get_profile().is_manager:
+        if request.method == "POST":
+            form = profile_change_form(library=request.user.get_profile().library, data=request.POST)
+            if form.is_valid():
+                form.save()
+                return HttpResponseRedirect(post_change_redirect)
+            else:
+                context = {'form': form}
+                return TemplateResponse(request, template_name, context)
+        else:
+            form = profile_change_form(library=request.user.get_profile().library)
+            context = {'form': form}
+            return TemplateResponse(request, template_name, context)
+    else:
+        return HttpResponseRedirect(post_change_redirect)
+
+
+class DeleteUserFromLibrary(DeleteView, StaffOnlyView):
+    model = User
+
+    def get_success_url(self):
+        return reverse("books:users")
+
+    def get(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        if self.object.get_profile().library != self.request.user.get_profile().library or not self.request.user.get_profile().is_manager:
+            return HttpResponseRedirect(reverse('books:users'))
+        context = self.get_context_data(object=self.object)
+        return self.render_to_response(context)
+
+    def delete(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        success_url = self.get_success_url()
+        self.object.get_profile().library = None
+        self.object.get_profile().save()
+        return HttpResponseRedirect(success_url)
+
+
+def add_permissions_for_user(request, **kwargs):
+    user = User.objects.get(pk=int(kwargs['pk']))
+    if request.user.get_profile().is_manager:
+        if user.get_profile().is_manager:
+            user.get_profile().is_manager = False
+            user.get_profile().save()
+        else:
+            user.get_profile().is_manager = True
+            user.get_profile().save()
+    return HttpResponseRedirect(reverse("profile:profile", args=kwargs['pk']))
