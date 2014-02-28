@@ -95,7 +95,7 @@ class BookAdd(ManagerOnlyView, FormView):
         return HttpResponseRedirect(reverse("books:list"))
 
 
-class BookUpdate(StaffOnlyView, UpdateView):
+class BookUpdate(ManagerOnlyView, UpdateView):
     model = Book
     form_class = Book_UpdateForm
 
@@ -110,7 +110,7 @@ class BookUpdate(StaffOnlyView, UpdateView):
         return HttpResponseRedirect(reverse("books:list"))
 
 
-class DeleteBook(StaffOnlyView, DeleteView):
+class DeleteBook(ManagerOnlyView, DeleteView):
     model = Book
 
     def get(self, request, *args, **kwargs):
@@ -183,7 +183,7 @@ class BookListView(PaginationMixin, LoginRequiredView, ListView):
                 query = query & Q(busy=False)
 
             if query:
-                self.queryset = Book.books.filter(query).distinct()
+                self.queryset = Book.books.filter(query, library=self.request.user.get_profile().library).distinct()
         if self.kwargs['page']:
             self.page = int(self.kwargs['page'])
 
@@ -428,7 +428,7 @@ def library_change(request):
         return HttpResponseRedirect(post_change_redirect)
 
 
-class DeleteUserFromLibrary(DeleteView, StaffOnlyView):
+class DeleteUserFromLibrary(ManagerOnlyView, DeleteView):
     model = User
 
     def get_success_url(self):
@@ -450,8 +450,11 @@ class DeleteUserFromLibrary(DeleteView, StaffOnlyView):
 
 
 def add_permissions_for_user(request, **kwargs):
-    user = User.objects.get(pk=int(kwargs['pk']))
-    if request.user.get_profile().is_manager:
+    try:
+        user = User.objects.get(pk=int(kwargs['pk']))
+    except User.DoesNotExist:
+        raise Http404
+    if request.user.get_profile().is_manager and user.get_profile().library == request.user.get_profile().library:
         if user.get_profile().is_manager:
             user.get_profile().is_manager = False
             user.get_profile().save()
