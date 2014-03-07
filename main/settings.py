@@ -194,6 +194,7 @@ INSTALLED_APPS = (
     'crispy_forms',
     'south',
     'easy_thumbnails',
+    'invitation',
 )
 
 warnings.filterwarnings(

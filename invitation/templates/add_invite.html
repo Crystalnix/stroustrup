@@ -1,0 +1,17 @@
+{% extends 'profilebase.html' %}
+{% load crispy_forms_tags %}
+{% block title %}Invite{% endblock %}
+{%  block location %} Send invitation {% endblock %}
+
+{% block link_extension %}
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/book_index.css' %}"/>
+
+{% endblock %}
+
+{% block content %}
+    {% crispy form  %}
+    <div class="form-signin">
+    <a class="btn btn-primary btn-lg btn-block btn-danger" href="{% url 'profile:profile' user.id %}">Cancel</a>
+    </div>
+{% endblock %}

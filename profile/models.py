@@ -6,6 +6,7 @@ from easy_thumbnails.fields import ThumbnailerImageField
 from book_library.models import Library
 
 
+
 class Profile_addition(models.Model):
     user = models.ForeignKey(User, unique=True, related_name='profile')
     is_manager = models.BooleanField(default=False)

@@ -1,6 +1,7 @@
 from django.contrib import admin
 from book_library.models import Book, Author, Book_Tag, Book_Request, Request_Return, Library
 from profile.models import Profile_addition
+from invitation.models import Invite
 
 class BooksInLine(admin.TabularInline):
     model = Book
@@ -38,6 +39,9 @@ class LibraryAdmin(admin.ModelAdmin):
     list_display = ('name',)
 
 
+class InviteAdmin(admin.ModelAdmin):
+    model = Invite
+    list_display = ('email',)
 
 
 admin.site.register(Book, BookAdmin)
@@ -47,4 +51,5 @@ admin.site.register(Book_Request, Book_RequestAdmin) #SpaTedition
 admin.site.register(Profile_addition, Profile_additionsAdmin)
 admin.site.register(Request_Return, Request_ReturnAdmin)
 admin.site.register(Library, LibraryAdmin)
+admin.site.register(Invite, InviteAdmin)
 

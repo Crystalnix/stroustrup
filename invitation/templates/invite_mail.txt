@@ -1,0 +1,10 @@
+I've inviter you to {{library}}!
+
+To accept this invitation, click the following link,
+or copy and paste the url into your browser's address
+bar:
+
+{{link}}
+
+Best regards,
+Crystalnix team

@@ -1,0 +1,19 @@
+{% extends '../../main/templates/main/base.html' %}
+{% block title %} Crystalnix library: Activation Fail{% endblock %}
+
+{% block content %}
+    {% load static %}
+    <hr/>
+    <div class="col-md-6 col-md-offset-3">
+        <div class="panel panel-danger">
+            <div class="panel-heading">Fail!</div>
+            <div class="panel-body">
+                Sorry! Your invitation was already activated.
+            </div>
+        </div>
+
+        <a href="{% url 'authorisation:auth_login' %}" class="btn btn-primary btn-lg btn-block">
+            Continue <span class="glyphicon glyphicon-hand-right"></span>
+        </a>
+    </div>
+{% endblock %}

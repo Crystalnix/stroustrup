@@ -1,0 +1,23 @@
+{% extends '../../main/templates/main/base.html' %}
+{% block title %} Crystalnix library: Activation {% endblock %}
+
+{% block content %}
+    {% load static %}
+    <hr/>
+    <div class="col-md-6 col-md-offset-3">
+        <div class="panel panel-success">
+            <div class="panel-heading">Success!</div>
+            <div class="panel-body">
+
+                Your account has been activated!
+                Login: {{ login }}
+                Password:{{ password }}
+
+            </div>
+        </div>
+
+        <a href="{% url 'authorisation:auth_login' %}" class="btn btn-primary btn-lg btn-block">
+            Continue <span class="glyphicon glyphicon-hand-right"></span>
+        </a>
+    </div>
+{% endblock %}
