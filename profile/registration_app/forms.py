@@ -7,7 +7,7 @@ from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Submit, Field
 from crispy_forms.bootstrap import FormActions
 from django.contrib.auth.forms import AuthenticationForm, PasswordChangeForm
-from django.contrib.auth import authenticate
+
 
 
 class CustomRegistrationForm(RegistrationForm):
@@ -58,8 +58,8 @@ class CustomRegistrationForm(RegistrationForm):
 
 
 class CustomAuthForm(AuthenticationForm):
-    email = forms.CharField(max_length=75,
-                            widget=forms.TextInput(attrs={'placeholder': 'Username'})
+    username = forms.CharField(max_length=254,
+                            widget=forms.TextInput(attrs={'placeholder': 'Email'})
                             )
     password = forms.CharField(
         label=_("Password"),
@@ -73,30 +73,12 @@ class CustomAuthForm(AuthenticationForm):
     helper.help_text_inline = False
     helper.error_messages = True
     helper.form_show_labels = False
-    helper.layout = Layout('email',
+    helper.layout = Layout('username',
                            'password',
                            FormActions(Submit('sign_in_auth', 'Sign in!', css_class='btn btn-lg btn-block btn-primary'))
     )
 
-    def clean(self):
-        email = self.cleaned_data.get('email')
-        password = self.cleaned_data.get('password')
 
-        if email and password:
-            self.user_cache = authenticate(email=email,
-                                           password=password)
-            if self.user_cache is None:
-                raise forms.ValidationError(
-                    self.error_messages['invalid_login'],
-                    code='invalid_login',
-                    params={'username': self.username_field.verbose_name},
-                )
-            elif not self.user_cache.is_active:
-                raise forms.ValidationError(
-                    self.error_messages['inactive'],
-                    code='inactive',
-                )
-        return self.cleaned_data
 
 
 class LandingForm(forms.Form):

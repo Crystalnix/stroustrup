@@ -1,6 +1,6 @@
 import datetime
 from cStringIO import StringIO
-from django.contrib.auth.models import User
+# from django.contrib.auth.models import User
 from django.db import models
 from django.core.validators import RegexValidator
 from django.contrib import auth
@@ -12,7 +12,9 @@ from django.core.files import File
 from django.core.files.base import ContentFile
 from django.core.urlresolvers import reverse
 from django.conf import settings
+from django.db.models import get_model
 
+User = 'profile.CustomUser'
 
 class Library(models.Model):
     libraries = models.Manager()

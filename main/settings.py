@@ -34,6 +34,7 @@ PAGINATION_SETTINGS = {
     'MARGIN_PAGES_DISPLAYED': 2,
 }
 
+# AUTH_USER_MODEL = 'profile.CustomUser'
 AUTH_PROFILE_MODULE = 'profile.Profile_addition'
 
 THUMBNAIL_ALIASES = {
@@ -176,7 +177,7 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     'django.contrib.messages.context_processors.messages'
 )
 
-INSTALLED_APPS = (
+INSTALLED_APPS = ('profile',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -188,7 +189,7 @@ INSTALLED_APPS = (
     'registration',
     'book_library',
     'profile.registration_app',
-    'profile',
+
     'main',
     'pure_pagination',
     'crispy_forms',
@@ -206,7 +207,7 @@ warnings.simplefilter('error', DeprecationWarning)
 ALLOWED_EXTERNAL_OPENID_REDIRECT_DOMAINS = [DOMAIN]
 
 AUTHENTICATION_BACKENDS = (
-            'django_openid_auth.auth.OpenIDBackend',
+            # 'django_openid_auth.auth.OpenIDBackend',
             'django.contrib.auth.backends.ModelBackend',
             'auth.GoogleBackend',
         )
@@ -214,10 +215,6 @@ AUTHENTICATION_BACKENDS = (
 
 OPENID_SSO_SERVER_URL = 'https://www.google.com/accounts/o8/id'
 
-AUTHENTICATION_BACKENDS = (
-    'django.contrib.auth.backends.ModelBackend',
-    'auth.GoogleBackend',
-)
 
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'

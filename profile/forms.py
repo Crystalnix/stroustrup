@@ -4,8 +4,9 @@ from django.contrib.auth.models import User
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Submit, Field, Button
 from crispy_forms.bootstrap import FormActions
-from profile.models import Library
+from profile.models import Library, CustomUser
 from django.core.urlresolvers import reverse
+from django.contrib.auth.forms import UserCreationForm, UserChangeForm
 
 
 class ProfileForm(ModelForm):
@@ -55,5 +56,16 @@ class ProfileForm(ModelForm):
         return profile
 
 
+class CustomUserChangeForm(UserChangeForm):
+    """A form for updating users. Includes all the fields on
+    the user, but replaces the password field with admin's
+    password hash display field.
+    """
+
+    def __init__(self, *args, **kargs):
+        super(CustomUserChangeForm, self).__init__(*args, **kargs)
+
+    class Meta:
+        model = CustomUser
 
 

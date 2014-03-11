@@ -1,5 +1,10 @@
-from django.contrib.auth.models import User, check_password
+from django.contrib.auth.models import check_password
 from openid.consumer.consumer import SUCCESS
+from django.conf import settings
+from django.db.models import get_model
+
+model = settings.AUTH_USER_MODEL.split('.')
+User = get_model(model[0], model[1])
 
 
 class GoogleBackend:
@@ -50,24 +55,19 @@ class GoogleBackend:
 
 
 class EmailAuthBackend(object):
-    """
-    Email Authentication Backend
-
-    Allows a user to sign in using an email/password pair rather than
-    a username/password pair.
-    """
-
     def authenticate(self, username=None, password=None):
-        """ Authenticate a user based on email address as the user name. """
+        if '@' in username:
+            kwargs = {'email': username}
+        else:
+            kwargs = {'username': username}
         try:
-            user = User.objects.get(email=username)
+            user = User.objects.get(**kwargs)
             if user.check_password(password):
                 return user
         except User.DoesNotExist:
             return None
 
     def get_user(self, user_id):
-        """ Get a User object from the user_id. """
         try:
             return User.objects.get(pk=user_id)
         except User.DoesNotExist:
