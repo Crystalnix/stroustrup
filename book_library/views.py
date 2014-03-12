@@ -11,11 +11,11 @@ from django.core.urlresolvers import reverse
 from django.core import mail
 from django.shortcuts import get_object_or_404, Http404
 from django.db.models import Q
-from django.contrib.auth.models import User
 from pure_pagination.mixins import PaginationMixin
 from main.settings import BOOKS_ON_PAGE, REQUEST_ON_PAGE, USERS_ON_PAGE, EMAIL_HOST_USER
 from book_library.forms import *
 from book_library.models import *
+from profile.models import User
 from django_xhtml2pdf.utils import generate_pdf
 from urllib2 import urlopen
 from urlparse import urlparse
@@ -24,7 +24,6 @@ from re import search
 from django.template.response import TemplateResponse
 from django.views.decorators.csrf import csrf_protect
 
-
 class StaffOnlyView(object):
     @method_decorator(user_passes_test(lambda u: u.is_staff))
     def dispatch(self, request, *args, **kwargs):
@@ -32,7 +31,7 @@ class StaffOnlyView(object):
 
 
 class ManagerOnlyView(object):
-    @method_decorator(user_passes_test(lambda u: u.get_profile().is_manager))
+    @method_decorator(user_passes_test(lambda u: u.is_manager))
     def dispatch(self, request, *args, **kwargs):
         return super(ManagerOnlyView, self).dispatch(request, *args, **kwargs)
 
@@ -91,7 +90,7 @@ class BookAdd(ManagerOnlyView, FormView):
     object = None
 
     def form_valid(self, form):
-        form.save(self.request.user.get_profile().library)
+        form.save(self.request.user.library)
         return HttpResponseRedirect(reverse("books:list"))
 
 
@@ -151,7 +150,7 @@ class BookListView(PaginationMixin, LoginRequiredView, ListView):
     paginate_by = BOOKS_ON_PAGE
 
     def get_queryset(self):
-        self.queryset = Book.books.filter(library=self.request.user.get_profile().library)
+        self.queryset = Book.books.filter(library=self.request.user.library)
         try:
             self.busy = self.request.GET['busy']
         except KeyError:
@@ -183,7 +182,7 @@ class BookListView(PaginationMixin, LoginRequiredView, ListView):
                 query = query & Q(busy=False)
 
             if query:
-                self.queryset = Book.books.filter(query, library=self.request.user.get_profile().library).distinct()
+                self.queryset = Book.books.filter(query, library=self.request.user.library).distinct()
         if self.kwargs['page']:
             self.page = int(self.kwargs['page'])
 
@@ -242,7 +241,7 @@ class UsersView(PaginationMixin, LoginRequiredView, ListView):
     paginate_by = USERS_ON_PAGE
 
     def get_queryset(self):
-        self.queryset = User.objects.filter(profile__library = self.request.user.get_profile().library)
+        self.queryset = User.objects.filter(library=self.request.user.library)
 
 
 
@@ -394,9 +393,10 @@ class PrintQrCodesView(ManagerOnlyView, FormView):
     form_class = PrintQRcodesForm
 
     def get(self, request, *args, **kwargs):
-        library = self.request.user.get_profile().library
+        library = self.request.user.library
         form = self.form_class(library)
-        return self.render_to_response(self.get_context_data(form=form))
+        queryset = form.fields['books'].queryset
+        return self.render_to_response(self.get_context_data(form=form, queryset=queryset))
 
     def form_valid(self, form):
         data = form.cleaned_data['books']
@@ -405,15 +405,16 @@ class PrintQrCodesView(ManagerOnlyView, FormView):
         result = generate_pdf('book_card.html', file_object=resp, context=context)
         return result
 
+
 @csrf_protect
 @login_required
 def library_change(request):
     template_name = 'library_change.html'
     profile_change_form = LibraryForm
     post_change_redirect = reverse("profile:profile", args=str(request.user.pk))
-    if request.user.get_profile().is_manager:
+    if request.user.is_manager:
         if request.method == "POST":
-            form = profile_change_form(library=request.user.get_profile().library, data=request.POST)
+            form = profile_change_form(library=request.user.library, data=request.POST)
             if form.is_valid():
                 form.save()
                 return HttpResponseRedirect(post_change_redirect)
@@ -421,7 +422,7 @@ def library_change(request):
                 context = {'form': form}
                 return TemplateResponse(request, template_name, context)
         else:
-            form = profile_change_form(library=request.user.get_profile().library)
+            form = profile_change_form(library=request.user.library)
             context = {'form': form}
             return TemplateResponse(request, template_name, context)
     else:
@@ -436,7 +437,7 @@ class DeleteUserFromLibrary(ManagerOnlyView, DeleteView):
 
     def get(self, request, *args, **kwargs):
         self.object = self.get_object()
-        if self.object.get_profile().library != self.request.user.get_profile().library or not self.request.user.get_profile().is_manager:
+        if self.object.library != self.request.user.library or not self.request.user.is_manager:
             return HttpResponseRedirect(reverse('books:users'))
         context = self.get_context_data(object=self.object)
         return self.render_to_response(context)
@@ -454,11 +455,11 @@ def add_permissions_for_user(request, **kwargs):
         user = User.objects.get(pk=int(kwargs['pk']))
     except User.DoesNotExist:
         raise Http404
-    if request.user.get_profile().is_manager and user.get_profile().library == request.user.get_profile().library:
-        if user.get_profile().is_manager:
-            user.get_profile().is_manager = False
-            user.get_profile().save()
+    if request.user.is_manager and user.library == request.user.library:
+        if user.is_manager:
+            user.is_manager = False
+            user.save()
         else:
-            user.get_profile().is_manager = True
-            user.get_profile().save()
+            user.is_manager = True
+            user.save()
     return HttpResponseRedirect(reverse("profile:profile", args=kwargs['pk']))

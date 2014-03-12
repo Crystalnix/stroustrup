@@ -1,6 +1,5 @@
 import datetime
 from cStringIO import StringIO
-# from django.contrib.auth.models import User
 from django.db import models
 from django.core.validators import RegexValidator
 from django.contrib import auth
@@ -12,17 +11,9 @@ from django.core.files import File
 from django.core.files.base import ContentFile
 from django.core.urlresolvers import reverse
 from django.conf import settings
-from django.db.models import get_model
+from profile.models import User, Library
 
-User = 'profile.CustomUser'
 
-class Library(models.Model):
-    libraries = models.Manager()
-
-    name = models.CharField(max_length=30)
-
-    def __unicode__(self):
-        return self.name
 
 
 class Client_Story_Record(models.Model):

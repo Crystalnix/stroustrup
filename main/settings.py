@@ -34,8 +34,10 @@ PAGINATION_SETTINGS = {
     'MARGIN_PAGES_DISPLAYED': 2,
 }
 
-# AUTH_USER_MODEL = 'profile.CustomUser'
-AUTH_PROFILE_MODULE = 'profile.Profile_addition'
+
+
+AUTH_USER_MODEL = 'profile.User'
+AUTH_PROFILE_MODULE = 'profile.UserProfile'
 
 THUMBNAIL_ALIASES = {
     '': {

@@ -1,13 +1,20 @@
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, SiteProfileNotAvailable
-from django.db import models
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from easy_thumbnails.fields import ThumbnailerImageField
-from book_library.models import Library
 import warnings
 from django.core.exceptions import ImproperlyConfigured
 from django.core.mail import send_mail
 from django.db import models
+
+
+class Library(models.Model):
+    libraries = models.Manager()
+
+    name = models.CharField(max_length=30)
+
+    def __unicode__(self):
+        return self.name
 
 
 class CustomUserManager(BaseUserManager):
@@ -19,7 +26,8 @@ class CustomUserManager(BaseUserManager):
 
         user = self.model(
             username=username,
-            email=CustomUserManager.normalize_email(email)
+            email=CustomUserManager.normalize_email(email),
+            is_manager=False
         )
 
         user.set_password(password)
@@ -37,8 +45,8 @@ class CustomUserManager(BaseUserManager):
         return user
 
 
-class CustomUser(AbstractBaseUser):
-    username = models.CharField('username', max_length=32, unique=True)
+class User(AbstractBaseUser):
+    username = models.CharField('username', max_length=36, unique=True)
     email = models.CharField('email', max_length=75)
     first_name = models.CharField('first_name', max_length=30, blank=True)
     last_name = models.CharField('last_name', max_length=30, blank=True)
@@ -110,13 +118,13 @@ class CustomUser(AbstractBaseUser):
         return self._profile_cache
 
 
-class Profile_addition(models.Model):
-    user = models.ForeignKey(CustomUser, unique=True, related_name='profile')
+class UserProfile(models.Model):
+    user = models.ForeignKey(User, unique=True, related_name='profile')
     avatar = ThumbnailerImageField(upload_to='user_avatar', blank=True)
 
 
-@receiver(post_save, sender=CustomUser)
+@receiver(post_save, sender=User)
 def create_profile_addition(sender, instance, created, **kwargs):
     if created:
-        profile, created = Profile_addition.objects.get_or_create(user=instance)
+        profile, created = UserProfile.objects.get_or_create(user=instance)
 

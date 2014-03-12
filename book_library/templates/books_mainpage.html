@@ -39,7 +39,7 @@
                 <li id="books_bar"><a href="{% url 'books:list' %}">Books Page</a></li>
                 <li id="users_bar"><a href="{% url 'books:users'  %}">Users Page</a></li>
                 <li id="request_bar"><a href="{% url 'books:request'  %}">Request book from shop</a></li>
-                {% if user.get_profile.is_manager %}
+                {% if user.is_manager %}
                 <li id="add_bar"><a href="{%  url 'books:add' %}">Add book in Library</a></li>
                 <li id="add_bar"><a href="{%  url 'books:print' %}">Print QR codes</a></li>
                 {% endif %}
