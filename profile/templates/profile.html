@@ -2,7 +2,7 @@
 {% extends 'profilebase.html' %}
 
 {% block tittle %}
-    {{ profile.username }}'s profile
+    {{ profile.email }}'s profile
 {% endblock %}
 
 {% block location %}
@@ -24,9 +24,9 @@
     <div class="panel panel-default">
         <div class="panel-heading">
             <span class="glyphicon glyphicon-user"></span> <a class="title"> Profile </a>
-            {% if user.get_profile.is_manager %}
+            {% if user.is_manager %}
                 <div class="btn-group pull-right">
-                {% if profile.get_profile.is_manager %}
+                {% if profile.is_manager %}
                         <a type="button" class="btn btn-danger " href="{% url "books:permissions_user" profile.id%}"> Remove permission of manager</a>
                 {% else %}
                         <a type="button" class="btn btn-success " href="{% url "books:permissions_user" profile.id%}"> Add permission of manager</a>
@@ -61,7 +61,7 @@
                     {% endif %}
                 </div>
                 <div class="media-body">
-                    <h4 class="media-heading pull-left"> Username: {{ profile.username }}</h4>
+                    <h4 class="media-heading pull-left"> Username: {{ profile.email }}</h4>
                     <h4 class="media-heading pull-right"> Status:
                         {% if profile.get_profile.is_manager %}
                             Manager

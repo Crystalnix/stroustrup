@@ -248,7 +248,7 @@ class PrintQRcodesForm(forms.Form):
     def __init__(self, *args, **kwargs):
         super(PrintQRcodesForm, self).__init__(*args, **kwargs)
         if args:
-            self.fields['books'].initial = Book.books.filter(library=args[0])
+            self.fields['books']._queryset = Book.books.filter(library=args[0])
 
 
 class LibraryForm(ModelForm):

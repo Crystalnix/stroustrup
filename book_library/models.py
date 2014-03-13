@@ -152,7 +152,7 @@ class Book_Tag(models.Model):
 def get_users_books(self):
     return self.books.filter(client_story_record__book_returned=None)
 
-auth.models.User.add_to_class('get_users_books', get_users_books)
+User.add_to_class('get_users_books', get_users_books)
 
 
 class Book_Request(models.Model): #SpaT_edition

@@ -1,5 +1,5 @@
 from django.views.generic import DetailView
-from django.contrib.auth.models import User
+from profile.models import User
 from django.template.response import TemplateResponse
 from django.http import HttpResponseRedirect
 from django.core.urlresolvers import reverse
@@ -14,7 +14,7 @@ class ProfileView(LoginRequiredView, DetailView):
 
     def get(self, request, *args, **kwargs):
         self.object = self.get_object()
-        if self.object.get_profile().library != self.request.user.get_profile().library:
+        if self.object.library != self.request.user.library:
             return HttpResponseRedirect(reverse('books:users'))
         context = self.get_context_data(object=self.object)
         return self.render_to_response(context)

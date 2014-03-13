@@ -1,4 +1,3 @@
-__author__ = 'romanusynin'
 from urllib2 import urlopen
 from django.forms import ModelForm
 from django import forms

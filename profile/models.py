@@ -18,7 +18,7 @@ class Library(models.Model):
 
 
 class CustomUserManager(BaseUserManager):
-    def create_user(self, username, email, password=None):
+    def create_user(self, username, email, password=None, **extra_fields):
         if not username:
             raise ValueError('Users must have an username')
         if not email:
@@ -27,18 +27,20 @@ class CustomUserManager(BaseUserManager):
         user = self.model(
             username=username,
             email=CustomUserManager.normalize_email(email),
-            is_manager=False
+            is_manager=False,
+            **extra_fields
         )
 
         user.set_password(password)
         user.save(using=self._db)
         return user
 
-    def create_superuser(self, username, email, password=None):
+    def create_superuser(self, username, email, password=None, **extra_fields):
         user = self.create_user(
             username,
             email,
             password=password,
+            **extra_fields
         )
         user.is_admin = True
         user.save(using=self._db)

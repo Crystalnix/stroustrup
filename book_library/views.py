@@ -31,7 +31,7 @@ class StaffOnlyView(object):
 
 
 class ManagerOnlyView(object):
-    @method_decorator(user_passes_test(lambda u: u.is_manager))
+    @method_decorator(user_passes_test(lambda u:  u.is_active and u.is_manager))
     def dispatch(self, request, *args, **kwargs):
         return super(ManagerOnlyView, self).dispatch(request, *args, **kwargs)
 
@@ -55,7 +55,7 @@ class BookView(LoginRequiredView, DetailView, FormView):
 
     def get(self, request, *args, **kwargs):
         self.object = self.get_object()
-        if self.object.library != self.request.user.get_profile().library:
+        if self.object.library != self.request.user.library:
             return HttpResponseRedirect(reverse('books:list'))
         context = self.get_context_data(object=self.object)
         return self.render_to_response(context)
@@ -100,12 +100,12 @@ class BookUpdate(ManagerOnlyView, UpdateView):
 
     def get(self, request, *args, **kwargs):
         self.object = self.get_object()
-        if self.object.library != self.request.user.get_profile().library:
+        if self.object.library != self.request.user.library:
             return HttpResponseRedirect(reverse('books:list'))
         return super(BookUpdate, self).get(request, *args, **kwargs)
 
     def form_valid(self, form):
-        form.save(self.request.user.get_profile().library)
+        form.save(self.request.user.library)
         return HttpResponseRedirect(reverse("books:list"))
 
 
@@ -114,7 +114,7 @@ class DeleteBook(ManagerOnlyView, DeleteView):
 
     def get(self, request, *args, **kwargs):
         self.object = self.get_object()
-        if self.object.library != self.request.user.get_profile().library:
+        if self.object.library != self.request.user.library:
             return HttpResponseRedirect(reverse('books:list'))
         context = self.get_context_data(object=self.object)
         return self.render_to_response(context)
@@ -442,12 +442,12 @@ class DeleteUserFromLibrary(ManagerOnlyView, DeleteView):
         context = self.get_context_data(object=self.object)
         return self.render_to_response(context)
 
-    def delete(self, request, *args, **kwargs):
-        self.object = self.get_object()
-        success_url = self.get_success_url()
-        self.object.get_profile().library = None
-        self.object.get_profile().save()
-        return HttpResponseRedirect(success_url)
+    # def delete(self, request, *args, **kwargs):
+    #     self.object = self.get_object()
+    #     success_url = self.get_success_url()
+    #     self.object.library = None
+    #     self.object.save()
+    #     return HttpResponseRedirect(success_url)
 
 
 def add_permissions_for_user(request, **kwargs):
