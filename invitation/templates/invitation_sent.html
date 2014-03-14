@@ -9,14 +9,16 @@
 {% endblock %}
 
 {% block content %}
-    <div class="panel panel-success">
-            <div class="panel-heading">Success!</div>
-            <div class="panel-body">
-                Invitation has been sent
+    <div class="form-signin">
+            <div class="panel panel-success">
+                    <div class="panel-heading">Success!</div>
+                    <div class="panel-body">
+                        Invitation has been sent
+                    </div>
             </div>
-        </div>
 
-        <a href="{% url 'books:users' %}" class="btn btn-primary btn-lg btn-block">
-            Continue <span class="glyphicon glyphicon-hand-right"></span>
-        </a>
+            <a href="{% url 'books:users' %}" class="btn btn-primary btn-lg btn-block">
+                Continue <span class="glyphicon glyphicon-hand-right"></span>
+            </a>
+    </div>
 {% endblock %}

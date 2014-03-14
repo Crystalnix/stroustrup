@@ -10,7 +10,7 @@ from django.core.mail import send_mail
 from django.template.loader import render_to_string
 from django.template.response import TemplateResponse
 from django.contrib.sites.models import Site
-from django.core.urlresolvers import reverse
+from django.core.urlresolvers import reverse, reverse_lazy
 from urlparse import urljoin
 from profile.models import User
 import hashlib
@@ -26,7 +26,7 @@ class InviteAdd(ManagerOnlyView, CreateView):
         model = Invite
         form_class = InviteForm
         template_name = 'add_invite.html'
-        success_url = '/'
+        success_url = reverse_lazy('invite:success_sent')
 
         def form_valid(self, form):
             form.instance.who_invite = self.request.user.library
