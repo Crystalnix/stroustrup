@@ -39,6 +39,7 @@ class UserChangeForm(forms.ModelForm):
     the user, but replaces the password field with admin's
     password hash display field.
     """
+
     password = ReadOnlyPasswordHashField(label=_("Password"),
                                          help_text=_("Raw passwords are not stored, so there is no way to see "
                                          "this user's password, but you can change the password "
@@ -46,7 +47,7 @@ class UserChangeForm(forms.ModelForm):
 
     class Meta:
         model = User
-        fields = ('email', 'password', 'is_active', 'is_admin', 'library', 'is_manager')
+        fields = ('username', 'email', 'password', 'is_active', 'is_admin', 'library', 'is_manager')
 
     def clean_password(self):
         # Regardless of what the user provides, return the initial value.

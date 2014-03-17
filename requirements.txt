@@ -18,8 +18,13 @@ wsgiref==0.1.2
 django-crispy-forms==1.4.0
 django-pure-pagination==0.2.1
 PIL==1.1.7
+Pillow==2.2.1
 easy-thumbnails==1.4
 south==0.8.4
 qrcode==4.0.4
 xhtml2pdf==0.0.5
 django-xhtml2pdf==0.0.3
+beautifulsoup4==4.3.2
+boto==2.25.0
+bottlenose==0.5.0
+python-amazon-simple-product-api==1.4.0
