@@ -13,8 +13,8 @@ ADMINS = (
 )
 
 #Amazon Product Advertising API Account
-AMAZON_ACCESS_KEY = "AKIAJP5RTGQPZNN5RM4Q"
-AMAZON_SECRET_KEY = "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"
+AMAZON_ACCESS_KEY = "***"
+AMAZON_SECRET_KEY = "***"
 AMAZON_ASSOC_TAG = "520"
 
 DOMAIN = 'stroustrup.herokuapp.com'
@@ -82,13 +82,13 @@ ALLOWED_HOSTS = ['stroustrup.herokuapp.com']
 
 EMAIL_USE_TLS = True
 
-EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_HOST = '*****'
 
 EMAIL_PORT = 587
 
-EMAIL_HOST_USER = 'BookLibraryServer42@gmail.com'
+EMAIL_HOST_USER = '****'
 
-EMAIL_HOST_PASSWORD = 'testserver42'
+EMAIL_HOST_PASSWORD = '****'
 
 # Local time zone for this installation. Choices can be found here:
 # http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
@@ -142,7 +142,7 @@ STATICFILES_FINDERS = (
 )
 
 # Make this unique, and don't share it with anybody.
-SECRET_KEY = '@)h98mpls4rywdtz9+8*afi30s8-d=m_ez34t*d02(^wszdvjs'
+SECRET_KEY = '***'
 
 # List of callables that know how to import templates from various sources.
 TEMPLATE_LOADERS = (
@@ -180,25 +180,23 @@ TEMPLATE_CONTEXT_PROCESSORS = (
 )
 
 INSTALLED_APPS = ('profile',
-    'django.contrib.admin',
-    'django.contrib.auth',
-    'django.contrib.contenttypes',
-    'django.contrib.sessions',
-    'django.contrib.sites',
-    'django.contrib.messages',
-    'django.contrib.staticfiles',
-    'django_openid_auth',
-    'registration',
-    'book_library',
-    'profile.registration_app',
-
-    'main',
-    'pure_pagination',
-    'crispy_forms',
-    'south',
-    'easy_thumbnails',
-    'invitation',
-)
+                  'django.contrib.admin',
+                  'django.contrib.auth',
+                  'django.contrib.contenttypes',
+                  'django.contrib.sessions',
+                  'django.contrib.sites',
+                  'django.contrib.messages',
+                  'django.contrib.staticfiles',
+                  'social_auth',
+                  'registration',
+                  'book_library',
+                  'profile.registration_app',
+                  'main',
+                  'pure_pagination',
+                  'crispy_forms',
+                  'south',
+                  'easy_thumbnails',
+                  'invitation',)
 
 warnings.filterwarnings(
         'error', r"DateTimeField received a naive datetime",
@@ -208,12 +206,9 @@ warnings.simplefilter('error', DeprecationWarning)
 
 ALLOWED_EXTERNAL_OPENID_REDIRECT_DOMAINS = [DOMAIN]
 
-AUTHENTICATION_BACKENDS = (
-            # 'django_openid_auth.auth.OpenIDBackend',
-            'django.contrib.auth.backends.ModelBackend',
-            'auth.GoogleBackend',
-        )
-
+AUTHENTICATION_BACKENDS = ('auth.EmailAuthBackend',
+                           'social_auth.backends.google.GoogleBackend',
+                           'django.contrib.auth.backends.ModelBackend',)
 
 OPENID_SSO_SERVER_URL = 'https://www.google.com/accounts/o8/id'
 
@@ -231,11 +226,27 @@ LOGIN_URL = '/auth/login'
 
 LOGIN_REDIRECT_URL = '/'
 
+SESSION_SERIALIZER = 'django.contrib.sessions.serializers.PickleSerializer'
+
+SOCIAL_AUTH_PIPELINE = (
+    'social_auth.backends.pipeline.social.social_auth_user',
+    'profile.pipeline.get_username',
+    'profile.pipeline.create_user',
+    'social_auth.backends.pipeline.social.associate_user',
+    'social_auth.backends.pipeline.social.load_extra_data',
+    'social_auth.backends.pipeline.user.update_user_details'
+)
+
+SOCIAL_AUTH_COMPLETE_URL_NAME = 'socialauth_complete'
+SOCIAL_AUTH_ASSOCIATE_URL_NAME = 'socialauth_associate_complete'
+SOCIAL_AUTH_DEFAULT_USERNAME = 'new_social_auth_user'
+SOCIAL_AUTH_UUID_LENGTH = 36
+
 ACCOUNT_ACTIVATION_DAYS = 2
 
-RECAPTCHA_PRIVATE_KEY = '6LfTGuUSAAAAAB5OmCmNtYo0_CsMBozbaaoLR8Ad'
+RECAPTCHA_PRIVATE_KEY = '***'
 
-RECAPTCHA_PUBLIC_KEY = '6LfTGuUSAAAAAOpUy6YyDLTliIMo3FBAcyHGmV2K'
+RECAPTCHA_PUBLIC_KEY = '***'
 
 RECAPTCHA_USE_SSL = True
 
