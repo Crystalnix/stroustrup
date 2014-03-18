@@ -12,6 +12,7 @@ class Library(models.Model):
     libraries = models.Manager()
 
     name = models.CharField(max_length=30)
+    domain = models.CharField(max_length=30, default='', unique=True)
 
     def __unicode__(self):
         return self.name

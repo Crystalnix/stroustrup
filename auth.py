@@ -1,13 +1,13 @@
 from django.contrib.auth.models import check_password
 from openid.consumer.consumer import SUCCESS
 from django.conf import settings
-from django.db.models import get_model
+from profile.models import User
+from social_auth.backends.google import GoogleAuth
+from social_auth.backends import OpenIDBackend
 
-model = settings.AUTH_USER_MODEL.split('.')
-User = get_model(model[0], model[1])
+class CustomGoogleBackend(OpenIDBackend):
+    name = 'google'
 
-
-class GoogleBackend:
     def authenticate(self, openid_response):
         if openid_response is None:
             return None
@@ -72,3 +72,14 @@ class EmailAuthBackend(object):
             return User.objects.get(pk=user_id)
         except User.DoesNotExist:
             return None
+
+class CustomGoogleAuth(GoogleAuth):
+    """Google OpenID authentication"""
+    AUTH_BACKEND = CustomGoogleBackend
+
+
+
+
+BACKENDS = {
+    'google': CustomGoogleAuth,
+}

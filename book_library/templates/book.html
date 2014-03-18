@@ -116,7 +116,7 @@
                                     <h4><span id="status_row"  class="label label-danger take_return_button"> Busy </span></h4>
                                     <h4 id="owner">Owner:
                                         <a href="{% url "profile:profile" book.taken_by.id %}" class="author">
-                                        {{ book.taken_by.username }}
+                                        {{ book.taken_by.email}}
                                         </a>
                                     </h4>
                                 {% endifequal %}
@@ -185,7 +185,7 @@
                             <a href=" {% url "books:story" book.id %}" class="btn btn-primary btn-lg">
                                 Check a history of the book <span class="glyphicon glyphicon-list-alt"></span>
                             </a>
-                            {% if user.get_profile.is_manager %}
+                            {% if user.is_manager %}
                             <div class="btn-group btn-group-lg">
 
                                 <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
