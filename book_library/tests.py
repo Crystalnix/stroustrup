@@ -70,10 +70,6 @@ class RestrictionsTests(TestCase):
             urls_to_test.append(('books:change', book.pk))
             urls_to_test.append(('books:delete', book.pk))
             urls_to_test.append(('books:story', book.pk))
-        for author in Author.authors.all():
-            urls_to_test.append(('books:author', author.pk))
-        for tag in Book_Tag.tags.all():
-            urls_to_test.append(('books:tag', tag.pk))
         self.urls_to_test = urls_to_test
 
     def test_availability(self):
@@ -197,10 +193,10 @@ class FormsTests(TestCase):
                 title = random_string(size=(random.randint(1, 45)))
             e_version_exists = 0
             paperback_version_exists = random.randint(0, 1)
-            # if e_version_exists ==0:
-            #     file = None
+            # if e_version_exists == 0:
+            #     book_file = None
             # else:
-            #     file = 'file'
+            #     book_file = File('test_file.txt')
             description = random_string(size=random.randint(1, MAX_LENGTH_OF_DESCRIPTION), chars=string.printable)
             if will_be_an_error and (random.randint(0, 1) or not was_error):
                 authors = random_string(size=random.randint(1, 90), chars=string.letters)
@@ -214,74 +210,21 @@ class FormsTests(TestCase):
                             'e_version_exists': e_version_exists,
                             'paperback_version_exists': paperback_version_exists,
                             'description': description,
-                            'file': file,
+                            'file': None,
                             'authors_names': authors}
             if there_is_isbn:
                 form_context['isbn'] = isbn
-            request = self.client.post(reverse('books:add'), form_context)
+            response = self.client.post(reverse('books:add'), form_context)
             if not will_be_an_error:
                 books_count += 1
-                self.assertEqual(request.status_code, 302)
-                self.assertEqual('http://testserver/', request['location'])
+                self.assertEqual(response.status_code, 200)
                 new_book = Book.books.get(pk=books_count)
                 self.assertEqual(new_book.title, title)
                 self.assertEqual(new_book.description, description)
                 if there_is_isbn:
                     self.assertEqual(new_book.isbn, isbn)
             else:
-                self.assertTrue(not request.context_data['form'].is_valid())
-
-    def test_add_author(self):
-        authors_count = 0
-        delta_percent = count_delta(NUMBER_OF_ITERATIONS_AUTHORS)
-        percentage = delta_percent
-        for i in range(1, NUMBER_OF_ITERATIONS_AUTHORS):
-            percentage = write_percentage(percentage, delta_percent)
-            will_be_an_error = random.randint(0, 1)
-            was_error = False
-            if will_be_an_error and random.randint(0, 1):  # it will be in this field
-                first_name = random_string(size=(random.randint(46, 100)))
-                was_error = True
-            else:
-                first_name = random_string(size=(random.randint(1, 45)))
-            if will_be_an_error and (random.randint(0, 1) or not was_error):  # read "and it will be in this field"
-                last_name = random_string(size=(random.randint(46, 100)))
-            else:
-                last_name = random_string(size=(random.randint(1, 45)))
-            request = self.client.post(reverse('books:add_author'), {'first_name': first_name,
-                                                              'last_name': last_name,})
-            if not will_be_an_error:
-                authors_count += 1
-                self.assertEqual(request.status_code, 302)
-                self.assertEqual('http://testserver/', request['location'])
-                new_author = Author.authors.get(pk=authors_count)
-                self.assertEqual(new_author.first_name, first_name)
-                self.assertEqual(new_author.last_name, last_name)
-            else:
-                self.assertTrue(not request.context_data['form'].is_valid())
-
-    def test_add_tag(self):
-        tags_count = 0
-        delta_percent = count_delta(NUMBER_OF_ITERATIONS_TAGS)
-        percentage = delta_percent
-        for i in range(1, NUMBER_OF_ITERATIONS_TAGS):
-            percentage = write_percentage(percentage, delta_percent)
-            will_be_an_error = random.randint(0, 1)
-            was_error = False
-            if will_be_an_error:  # it will be in this field
-                tag = random_string(size=(random.randint(21, 100)))
-                was_error = True
-            else:
-                tag = random_string(size=(random.randint(1, 20)))
-            request = self.client.post(reverse('books:add_tag'), {'tag': tag,})
-            if not will_be_an_error:
-                tags_count += 1
-                self.assertEqual(request.status_code, 302)
-                self.assertEqual('http://testserver/', request['location'])
-                new_tag = Book_Tag.tags.get(pk=tags_count)
-                self.assertEqual(new_tag.tag, tag)
-            else:
-                self.assertTrue(not request.context_data['form'].is_valid())
+                self.assertTrue(not response.context_data['form'].is_valid())
 
     def test_search(self):
         tags_count = 0
@@ -318,7 +261,6 @@ class FormsTests(TestCase):
                 book_busy = Book.books.get(pk=2)
                 book_free = Book.books.get(pk=1)
                 self.assertTrue(book_free not in request.context_data['object_list'] and book_busy in request.context_data['object_list'])
-
 
 
 class SpecialCaseTests(TestCase):

@@ -1,0 +1,514 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+  <head>
+    <meta http-equiv="Content-type" content="text/html;charset=UTF-8" />
+    <title>Test coverage report: book_library.views</title>
+    <style type="text/css" media="screen">
+      a
+      {
+        color: #3d707a;
+      }
+      
+      a:hover, a:active
+      {
+        color: #bf7d18;
+      }
+    
+      body 
+      {
+        font-family: "Lucida Sans Unicode", "Lucida Grande", sans-serif;
+        font-size: 13px;
+      }
+      
+      .nav 
+      {
+        font-size: 12px;
+        margin-left: 50px;
+      }
+
+      .ignored
+      {
+        color: #707070;
+      }
+
+      .executed 
+      {
+        color: #3d9900;
+      }
+
+      .missed 
+      {
+        color: red;
+        font-weight: bold;
+      }
+
+      .excluded 
+      {
+        color: #6090f0;
+        font-weight: lighter;
+      }
+    
+      #content-header 
+      {
+        font-size: 12px;
+        padding: 18px 0 18px 50px;
+      }
+
+      #content-header h1 
+      {
+        font-size: 16px;
+        margin: 10px 0 0 0;
+        color: #909090;
+      }
+      
+      #module-name
+      {
+        color: #583707;
+      }
+    
+      #content-header p
+      {
+        font-size: 13px;
+        margin: 0;
+        color: #909090;
+      }
+
+      #content-header .normal 
+      {
+        color: #609030;
+      }
+
+      #content-header .warning 
+      {
+        color: #d0a000;
+      }
+
+      #content-header .critical 
+      {
+        color: red;
+      }
+      
+      #source-listing 
+      {
+        margin-bottom: 24px;
+      }
+
+      #source-listing ol 
+      {
+        padding: 0 0 0 50px;
+        width: 90%;
+        font-family: monospace;
+        list-style-position: outside;
+      }
+
+      #source-listing ol li 
+      {
+        line-height: 18px;
+        font-size: small;
+      }
+        
+      #source-listing ol code 
+      {
+        padding:  0 .001em 0 0; /* Firefox doesn't render empty li's properly */
+        font-size: medium;
+        white-space: pre;
+      }
+   </style>
+  </head>
+
+  <body>
+
+<div class="nav">
+  <a href="book_library.models.html">book_library.models</a> &lt;&lt;
+  <a href="../index.html">index</a>
+</div>
+
+<div id="content-header">
+  <h1>
+    <span id="module-name">book_library.views</span>:
+    257 total statements,
+    <span class="critical">26.9% covered</span>
+  </h1>
+  <p>Generated: Fri 2014-03-21 15:36 OMST</p>
+  <p>Source file: /Users/romanusynin/PycharmProjects/stroustrup/book_library/views.py</p>
+  <p>
+    Stats:
+    <span class="executed">64 executed</span>,
+    <span class="missed">174 missed</span>,
+    <span class="excluded">19 excluded</span>,
+    <span class="ignored">102 ignored</span> 
+  </p> 
+</div>
+
+<div id="source-listing">
+  <ol>
+    <li class="excluded"><code>import json</code></li>
+<li class="excluded"><code>import math</code></li>
+<li class="excluded"><code>from django.http import HttpResponseRedirect, HttpResponse</code></li>
+<li class="excluded"><code>from django.views.generic.list import ListView</code></li>
+<li class="excluded"><code>from django.views.generic.edit import FormView</code></li>
+<li class="excluded"><code>from django.utils.decorators import method_decorator</code></li>
+<li class="excluded"><code>from django.contrib.auth.decorators import login_required, user_passes_test</code></li>
+<li class="excluded"><code>from django.views.generic.edit import UpdateView, CreateView, DeleteView</code></li>
+<li class="excluded"><code>from django.views.generic import DetailView</code></li>
+<li class="excluded"><code>from django.core.urlresolvers import reverse</code></li>
+<li class="excluded"><code>from django.core import mail</code></li>
+<li class="excluded"><code>from django.shortcuts import get_object_or_404, Http404</code></li>
+<li class="excluded"><code>from django.db.models import Q</code></li>
+<li class="excluded"><code>from django.contrib.auth.models import User</code></li>
+<li class="excluded"><code>from pure_pagination.mixins import PaginationMixin</code></li>
+<li class="excluded"><code>from main.settings import BOOKS_ON_PAGE, REQUEST_ON_PAGE, USERS_ON_PAGE, EMAIL_HOST_USER</code></li>
+<li class="excluded"><code>from book_library.forms import *</code></li>
+<li class="excluded"><code>from book_library.models import *</code></li>
+<li class="excluded"><code>from django_xhtml2pdf.utils import generate_pdf</code></li>
+<li class="ignored"><code></code></li>
+<li class="ignored"><code></code></li>
+<li class="executed"><code>class StaffOnlyView(object):</code></li>
+<li class="executed"><code>    @method_decorator(user_passes_test(lambda u: u.is_staff))</code></li>
+<li class="ignored"><code>    def dispatch(self, request, *args, **kwargs):</code></li>
+<li class="missed"><code>        return super(StaffOnlyView, self).dispatch(request, *args, **kwargs)</code></li>
+<li class="ignored"><code></code></li>
+<li class="ignored"><code></code></li>
+<li class="executed"><code>class LoginRequiredView(object):</code></li>
+<li class="executed"><code>    @method_decorator(login_required())</code></li>
+<li class="ignored"><code>    def dispatch(self, request, *args, **kwargs):</code></li>
+<li class="missed"><code>        return super(LoginRequiredView, self).dispatch(request, *args, **kwargs)</code></li>
+<li class="ignored"><code></code></li>
+<li class="ignored"><code></code></li>
+<li class="executed"><code>class AddRequestView(CreateView): #SpaT_edition</code></li>
+<li class="executed"><code>    @method_decorator(login_required())</code></li>
+<li class="ignored"><code>    def dispatch(self, request, *args, **kwargs):</code></li>
+<li class="missed"><code>        return super(AddRequestView, self).dispatch(request, *args, **kwargs)</code></li>
+<li class="ignored"><code></code></li>
+<li class="ignored"><code></code></li>
+<li class="executed"><code>class BookView(LoginRequiredView, DetailView, FormView):</code></li>
+<li class="executed"><code>    model = Book</code></li>
+<li class="executed"><code>    form_class = Book_CommentForm</code></li>
+<li class="executed"><code>    object = None</code></li>
+<li class="ignored"><code></code></li>
+<li class="executed"><code>    def get_context_data(self, **kwargs):</code></li>
+<li class="missed"><code>        context = {}</code></li>
+<li class="missed"><code>        context['book'] = self.get_object()</code></li>
+<li class="missed"><code>        if context['book'].busy:</code></li>
+<li class="missed"><code>            context['book_user'] = context['book'].taken_by</code></li>
+<li class="missed"><code>        context['form'] = self.get_form(self.form_class)</code></li>
+<li class="missed"><code>        return super(BookView, self).get_context_data(**context)</code></li>
+<li class="ignored"><code></code></li>
+<li class="executed"><code>    def form_valid(self, form):</code></li>
+<li class="missed"><code>        book = self.get_object()</code></li>
+<li class="missed"><code>        msg = form.cleaned_data['comment']</code></li>
+<li class="missed"><code>        user = self.request.user</code></li>
+<li class="missed"><code>        comment = Book_Comment.comments.create(user=user, comment=msg)</code></li>
+<li class="missed"><code>        book.comments.add(comment)</code></li>
+<li class="missed"><code>        return HttpResponseRedirect(reverse("books:book", args=[book.id]))</code></li>
+<li class="ignored"><code></code></li>
+<li class="ignored"><code></code></li>
+<li class="executed"><code>class TagView(LoginRequiredView, DetailView):</code></li>
+<li class="executed"><code>    model = Book_Tag</code></li>
+<li class="ignored"><code></code></li>
+<li class="ignored"><code></code></li>
+<li class="executed"><code>class AuthorView(LoginRequiredView, DetailView):</code></li>
+<li class="executed"><code>    model = Author</code></li>
+<li class="ignored"><code></code></li>
+<li class="ignored"><code></code></li>
+<li class="executed"><code>class BookAdd(StaffOnlyView, CreateView):</code></li>
+<li class="executed"><code>    model = Book</code></li>
+<li class="executed"><code>    form_class = BookForm</code></li>
+<li class="executed"><code>    object = None</code></li>
+<li class="ignored"><code></code></li>
+<li class="ignored"><code></code></li>
+<li class="executed"><code>class BookUpdate(StaffOnlyView, UpdateView):</code></li>
+<li class="executed"><code>    model = Book</code></li>
+<li class="executed"><code>    form_class = Book_UpdateForm</code></li>
+<li class="ignored"><code></code></li>
+<li class="ignored"><code></code></li>
+<li class="executed"><code>class Delete(StaffOnlyView, DeleteView):</code></li>
+<li class="ignored"><code></code></li>
+<li class="executed"><code>    def get(self, request, *args, **kwargs):</code></li>
+<li class="missed"><code>        return super(Delete, self).get(self, request, *args, **kwargs)</code></li>
+<li class="ignored"><code></code></li>
+<li class="ignored"><code></code></li>
+<li class="executed"><code>class DeleteBook(Delete):</code></li>
+<li class="executed"><code>    model = Book</code></li>
+<li class="ignored"><code></code></li>
+<li class="ignored"><code></code></li>
+<li class="executed"><code>@login_required</code></li>
+<li class="ignored"><code>def take_book_view(request, number, *args, **kwargs):</code></li>
+<li class="missed"><code>    book = Book.books.get(id=number)</code></li>
+<li class="missed"><code>    if not book.busy:</code></li>
+<li class="missed"><code>        client = request.user</code></li>
+<li class="missed"><code>        book.take_by(client)</code></li>
+<li class="missed"><code>        book.save()</code></li>
+<li class="missed"><code>        return HttpResponse(content=json.dumps({'message': 'Book taken'}))</code></li>
+<li class="missed"><code>    return HttpResponseRedirect(reverse('book:list'))</code></li>
+<li class="ignored"><code></code></li>
+<li class="ignored"><code></code></li>
+<li class="executed"><code>@login_required</code></li>
+<li class="ignored"><code>def return_book_view(request, number, *args, **kwargs):</code></li>
+<li class="missed"><code>    book = Book.books.get(id=number)</code></li>
+<li class="missed"><code>    client = request.user</code></li>
+<li class="missed"><code>    books = client.get_users_books()</code></li>
+<li class="missed"><code>    if book.busy and books and book in books:</code></li>
+<li class="missed"><code>        book.return_by(client)</code></li>
+<li class="missed"><code>        book.save()</code></li>
+<li class="missed"><code>        return HttpResponse(content=json.dumps({'message': 'Book returned'}))</code></li>
+<li class="missed"><code>    return HttpResponseRedirect(reverse('book:list'))</code></li>
+<li class="ignored"><code></code></li>
+<li class="ignored"><code></code></li>
+<li class="executed"><code>class BookListView(PaginationMixin, LoginRequiredView, ListView):</code></li>
+<li class="executed"><code>    busy = None</code></li>
+<li class="executed"><code>    free = None</code></li>
+<li class="executed"><code>    form_class = SearchForm</code></li>
+<li class="executed"><code>    page = 1</code></li>
+<li class="executed"><code>    paginate_by = BOOKS_ON_PAGE</code></li>
+<li class="ignored"><code></code></li>
+<li class="executed"><code>    def get_queryset(self):</code></li>
+<li class="missed"><code>        self.queryset = Book.books.all()</code></li>
+<li class="missed"><code>        try:</code></li>
+<li class="missed"><code>            self.busy = self.request.GET['busy']</code></li>
+<li class="missed"><code>        except KeyError:</code></li>
+<li class="missed"><code>            self.busy = False</code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>        try:</code></li>
+<li class="missed"><code>            self.free = self.request.GET['free']</code></li>
+<li class="missed"><code>        except KeyError:</code></li>
+<li class="missed"><code>            self.free = False</code></li>
+<li class="missed"><code>        form = SearchForm(self.request.GET)</code></li>
+<li class="missed"><code>        if form.is_valid():</code></li>
+<li class="missed"><code>            query = Q()</code></li>
+<li class="missed"><code>            if form.cleaned_data['keywords']:</code></li>
+<li class="missed"><code>                keywords = form['keywords']</code></li>
+<li class="missed"><code>                keywords = list(set(keywords.data.split(' ')))  #deleting equals</code></li>
+<li class="missed"><code>                for keyword in keywords:</code></li>
+<li class="missed"><code>                    if not Book.books.filter(isbn__iexact=keyword):</code></li>
+<li class="missed"><code>                        query = query | Q(description__icontains=keyword) | Q(title__icontains=keyword)</code></li>
+<li class="missed"><code>                        query = query | Q(authors__first_name__iexact=keyword) | Q(authors__last_name__iexact=keyword)</code></li>
+<li class="missed"><code>                        query = query | Q(tags__tag__iexact=keyword)</code></li>
+<li class="ignored"><code>                    else:</code></li>
+<li class="missed"><code>                        query = Q(isbn__iexact=keyword)</code></li>
+<li class="ignored"><code></code></li>
+<li class="ignored"><code></code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>            if self.busy and not self.free:</code></li>
+<li class="missed"><code>                query = query &amp; Q(busy=True)</code></li>
+<li class="missed"><code>            if not self.busy and self.free:</code></li>
+<li class="missed"><code>                query = query &amp; Q(busy=False)</code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>            if query:</code></li>
+<li class="missed"><code>                self.queryset = Book.books.filter(query).distinct()</code></li>
+<li class="missed"><code>        if self.kwargs['page']:</code></li>
+<li class="missed"><code>            self.page = int(self.kwargs['page'])</code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>        return self.queryset</code></li>
+<li class="ignored"><code></code></li>
+<li class="executed"><code>    def get_context_data(self, **kwargs):</code></li>
+<li class="missed"><code>        context = {}</code></li>
+<li class="missed"><code>        context['object_list'] = self.queryset</code></li>
+<li class="missed"><code>        context['form'] = self.form_class(self.request.GET)</code></li>
+<li class="missed"><code>        context['busy'] = self.busy</code></li>
+<li class="missed"><code>        return super(BookListView, self).get_context_data(**context)</code></li>
+<li class="ignored"><code></code></li>
+<li class="ignored"><code></code></li>
+<li class="executed"><code>class BookStoryListView(LoginRequiredView, ListView):</code></li>
+<li class="ignored"><code></code></li>
+<li class="executed"><code>    def get(self, request, *args, **kwargs):</code></li>
+<li class="missed"><code>        return super(BookStoryListView, self).get(request, *args, **kwargs)</code></li>
+<li class="ignored"><code></code></li>
+<li class="executed"><code>    model = Client_Story_Record</code></li>
+<li class="ignored"><code></code></li>
+<li class="executed"><code>    def get_context_data(self, **kwargs):</code></li>
+<li class="missed"><code>        context = {}</code></li>
+<li class="missed"><code>        pk = self.kwargs['pk']</code></li>
+<li class="missed"><code>        records_list = Client_Story_Record.records.filter(book__id=pk)</code></li>
+<li class="missed"><code>        context['object_list'] = records_list</code></li>
+<li class="missed"><code>        context['pk'] = pk</code></li>
+<li class="missed"><code>        return super(BookStoryListView, self).get_context_data(**context)</code></li>
+<li class="ignored"><code></code></li>
+<li class="executed"><code>@login_required()</code></li>
+<li class="ignored"><code>def ask_to_return(request, *args, **kwargs):</code></li>
+<li class="missed"><code>    book = get_object_or_404(Book, id=request.GET['ID'])</code></li>
+<li class="missed"><code>    if book.busy:</code></li>
+<li class="missed"><code>        profile = book.taken_by()</code></li>
+<li class="missed"><code>        if request.user != profile:</code></li>
+<li class="missed"><code>            if request.user.is_staff:</code></li>
+<li class="missed"><code>                authors = u", ".join(unicode(v) for v in book.authors.all())</code></li>
+<li class="missed"><code>                server_email = EMAIL_HOST_USER</code></li>
+<li class="missed"><code>                email = mail.EmailMessage('Book return request', "Manager {0} ({1} {2}) is asking you to return "</code></li>
+<li class="ignored"><code>                                                                 "the book: ''{3}'' author(s): {4}."</code></li>
+<li class="ignored"><code>                                                                 " You can return it by click on this link: {5}{6}"</code></li>
+<li class="ignored"><code>                                                                 .format(request.user.username, request.user.first_name,</code></li>
+<li class="ignored"><code>                                                                         request.user.last_name, book.title,</code></li>
+<li class="ignored"><code>                                                                         authors, settings.DOMAIN,</code></li>
+<li class="ignored"><code>                                                                         reverse('books:book', kwargs={'pk': book.id})),</code></li>
+<li class="ignored"><code>                                          server_email, [profile.email])</code></li>
+<li class="missed"><code>                email.send()</code></li>
+<li class="ignored"><code>            else:</code></li>
+<li class="missed"><code>                Request_Return.objects.create(book=book, user_request=request.user)</code></li>
+<li class="missed"><code>            return HttpResponse(content=json.dumps({'message': 'Request has been sent'}))</code></li>
+<li class="missed"><code>    return HttpResponseRedirect(reverse("books:list"))</code></li>
+<li class="ignored"><code></code></li>
+<li class="ignored"><code></code></li>
+<li class="executed"><code>class UsersView(PaginationMixin, LoginRequiredView, ListView):</code></li>
+<li class="executed"><code>    model = User</code></li>
+<li class="executed"><code>    page = 1</code></li>
+<li class="executed"><code>    paginate_by = USERS_ON_PAGE</code></li>
+<li class="executed"><code>    queryset = User.objects.all()</code></li>
+<li class="ignored"><code></code></li>
+<li class="executed"><code>    def get(self, request, *args, **kwargs):</code></li>
+<li class="missed"><code>        return super(UsersView, self).get(request, *args, **kwargs)</code></li>
+<li class="ignored"><code></code></li>
+<li class="executed"><code>    def get_context_data(self, **kwargs):</code></li>
+<li class="missed"><code>        context = {}</code></li>
+<li class="missed"><code>        context['object_list']=self.queryset</code></li>
+<li class="missed"><code>        return super(UsersView, self).get_context_data(**context)</code></li>
+<li class="ignored"><code></code></li>
+<li class="ignored"><code></code></li>
+<li class="executed"><code>class requestBook(PaginationMixin, AddRequestView, ListView): #SpaT_edition</code></li>
+<li class="executed"><code>    model = Book_Request</code></li>
+<li class="executed"><code>    form_class = Book_RequestForm</code></li>
+<li class="executed"><code>    object = None</code></li>
+<li class="executed"><code>    object_list = None</code></li>
+<li class="executed"><code>    queryset = Book_Request.requests.order_by('-id')</code></li>
+<li class="executed"><code>    page = 1</code></li>
+<li class="executed"><code>    paginate_by = REQUEST_ON_PAGE</code></li>
+<li class="ignored"><code></code></li>
+<li class="executed"><code>    def get_context_data(self, **kwargs):</code></li>
+<li class="missed"><code>        context = {}</code></li>
+<li class="missed"><code>        context['object_list'] = self.queryset</code></li>
+<li class="missed"><code>        context['form'] = self.get_form(self.form_class)</code></li>
+<li class="missed"><code>        return super(requestBook, self).get_context_data(**context)</code></li>
+<li class="ignored"><code></code></li>
+<li class="executed"><code>    def post(self, request, *args, **kwargs):</code></li>
+<li class="missed"><code>        form = self.form_class(request.POST)</code></li>
+<li class="missed"><code>        if form.is_valid():</code></li>
+<li class="missed"><code>            _url = request.POST['url']</code></li>
+<li class="missed"><code>            start_str = 'http'</code></li>
+<li class="missed"><code>            if not _url.startswith(start_str):</code></li>
+<li class="missed"><code>                _url = start_str+'://'+_url</code></li>
+<li class="missed"><code>            _title = request.POST['title']</code></li>
+<li class="missed"><code>            req = Book_Request.requests.create(url=_url, title=_title, user=request.user)</code></li>
+<li class="missed"><code>            req.save()</code></li>
+<li class="missed"><code>            return HttpResponseRedirect(reverse("books:request"))</code></li>
+<li class="missed"><code>        return self.render_to_response(self.get_context_data(form=form))</code></li>
+<li class="ignored"><code></code></li>
+<li class="ignored"><code></code></li>
+<li class="executed"><code>def LikeRequest(request, number, *args): #SpaT_edition</code></li>
+<li class="missed"><code>    queryset = Book_Request.requests.all()</code></li>
+<li class="missed"><code>    user = request.user</code></li>
+<li class="missed"><code>    result_vote = 0</code></li>
+<li class="missed"><code>    all_users = []</code></li>
+<li class="missed"><code>    for req in queryset:</code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>        if req.id == int(number):</code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>            result_vote = req.vote</code></li>
+<li class="missed"><code>            flag = True</code></li>
+<li class="missed"><code>            for user1 in req.users.all():</code></li>
+<li class="missed"><code>                if user1.id == user.id:</code></li>
+<li class="missed"><code>                    flag = False</code></li>
+<li class="missed"><code>                    break</code></li>
+<li class="missed"><code>            if not flag:</code></li>
+<li class="missed"><code>                req.vote -= 1</code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>                result_vote = req.vote</code></li>
+<li class="missed"><code>                req.users.remove(user)</code></li>
+<li class="missed"><code>                req.save()</code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>                for i in req.users.all():</code></li>
+<li class="missed"><code>                    all_users.append(i.username)</code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>                break</code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>            req.vote += 1</code></li>
+<li class="missed"><code>            req.users.add(user)</code></li>
+<li class="missed"><code>            req.save()</code></li>
+<li class="missed"><code>            for i in req.users.all():</code></li>
+<li class="missed"><code>                    all_users.append(i.username)</code></li>
+<li class="missed"><code>            result_vote = req.vote</code></li>
+<li class="missed"><code>            break</code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>    return HttpResponse(content=json.dumps({</code></li>
+<li class="ignored"><code>        'status': 'OK',</code></li>
+<li class="ignored"><code>        'vote': result_vote,</code></li>
+<li class="ignored"><code>        'listuser': all_users,</code></li>
+<li class="ignored"><code></code></li>
+<li class="ignored"><code>        }, sort_keys=True))</code></li>
+<li class="ignored"><code></code></li>
+<li class="executed"><code>def rating_post(request, *args, **kwargs):</code></li>
+<li class="missed"><code>    number = int(args[0])</code></li>
+<li class="missed"><code>    queryset = Book.books.all()</code></li>
+<li class="missed"><code>    book = None</code></li>
+<li class="missed"><code>    for _book in queryset:</code></li>
+<li class="missed"><code>        if number == _book.id:</code></li>
+<li class="missed"><code>            book = _book</code></li>
+<li class="missed"><code>            break</code></li>
+<li class="missed"><code>    if not book:</code></li>
+<li class="missed"><code>        raise ValueError</code></li>
+<li class="missed"><code>    _user = request.user</code></li>
+<li class="missed"><code>    _rate = request.GET['score']</code></li>
+<li class="missed"><code>    _rate = float(_rate)</code></li>
+<li class="missed"><code>    _votes = int(request.GET['votes'])</code></li>
+<li class="missed"><code>    value = None</code></li>
+<li class="missed"><code>    try:</code></li>
+<li class="missed"><code>        value = book.book_rating.all()</code></li>
+<li class="missed"><code>    except Exception:</code></li>
+<li class="missed"><code>        return HttpResponse(content=json.dumps({</code></li>
+<li class="ignored"><code>            'status': 'BAD_GATE',</code></li>
+<li class="ignored"><code>            'score': request.GET['score'],</code></li>
+<li class="ignored"><code>            'msg': 'Unexpected error'},</code></li>
+<li class="ignored"><code>            sort_keys=True))</code></li>
+<li class="missed"><code>    if value:</code></li>
+<li class="missed"><code>        for record in value:</code></li>
+<li class="missed"><code>            if record.user_owner.id == _user.id:</code></li>
+<li class="missed"><code>                _votes -= 1</code></li>
+<li class="missed"><code>                if _votes &gt; 1:</code></li>
+<li class="missed"><code>                    common = float(request.GET['val'])-record.user_rating/_votes</code></li>
+<li class="ignored"><code>                else:</code></li>
+<li class="missed"><code>                    common = 0</code></li>
+<li class="missed"><code>                common += _rate/_votes</code></li>
+<li class="missed"><code>                common = math.ceil(common*100)/100</code></li>
+<li class="missed"><code>                book.book_rating.remove(record)</code></li>
+<li class="missed"><code>                elem = Book_Rating.rating_manager.create(user_owner=_user, user_rating=_rate, common_rating=common, votes=_votes)</code></li>
+<li class="missed"><code>                book.book_rating.add(elem)</code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>                return HttpResponse(content=json.dumps({'status': 'CHANGED',</code></li>
+<li class="ignored"><code>                                                        'score': request.GET['score'],</code></li>
+<li class="ignored"><code>                                                        'votes': request.GET['votes'],</code></li>
+<li class="ignored"><code>                                                        'val': common,</code></li>
+<li class="ignored"><code>                                                        'msg': 'Your vote has been changed'},</code></li>
+<li class="ignored"><code>                    sort_keys=True))</code></li>
+<li class="missed"><code>    common = (float(request.GET['val'])*(_votes-1)+_rate)/_votes</code></li>
+<li class="missed"><code>    common = math.ceil(common*100)/100</code></li>
+<li class="missed"><code>    elem = Book_Rating.rating_manager.create(user_owner=_user, user_rating=_rate, common_rating=common, votes=_votes)</code></li>
+<li class="missed"><code>    elem.save()</code></li>
+<li class="missed"><code>    book.book_rating.add(elem)</code></li>
+<li class="missed"><code>    return HttpResponse(content=json.dumps({</code></li>
+<li class="ignored"><code>        'status':'OK',</code></li>
+<li class="ignored"><code>        'score': request.GET['score'],</code></li>
+<li class="ignored"><code>        'votes': request.GET['votes'],</code></li>
+<li class="ignored"><code>        'val': common,</code></li>
+<li class="ignored"><code>        'msg': 'Your vote has been approved',</code></li>
+<li class="ignored"><code>        }, sort_keys=True))</code></li>
+<li class="ignored"><code></code></li>
+<li class="ignored"><code></code></li>
+<li class="executed"><code>class PrintQrCodesView(LoginRequiredView, FormView):</code></li>
+<li class="executed"><code>    form_class = PrintQRcodesForm</code></li>
+<li class="ignored"><code></code></li>
+<li class="executed"><code>    def form_valid(self, form):</code></li>
+<li class="missed"><code>        data = form.cleaned_data['books']</code></li>
+<li class="missed"><code>        context = {'books': data}</code></li>
+<li class="missed"><code>        resp = HttpResponse(content_type='application/pdf')</code></li>
+<li class="missed"><code>        result = generate_pdf('book_card.html', file_object=resp, context=context)</code></li>
+<li class="missed"><code>        return result</code></li>
+<li class="ignored"><code></code></li>
+  </ol>
+</div>
+
+<div class="nav">
+  <a href="book_library.models.html">book_library.models</a> &lt;&lt;
+  <a href="../index.html">index</a>
+</div>
+
+  </body>
+</html>
+
