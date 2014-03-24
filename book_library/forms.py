@@ -257,6 +257,7 @@ class LibraryForm(ModelForm):
 
     class Meta:
         model = Library
+        fields = ['name']
 
     helper = FormHelper()
     helper.form_class = 'form-signin'

@@ -24,13 +24,6 @@ urlpatterns = patterns('',
                            views.main_view,
                            name='mainpage'),
 
-                       # url(r'^openid/login/$',
-                       #     'django_openid_auth.views.login_begin',
-                       #     name='openid-login'),
-                       #
-                       # url(r'^openid/login-complete/$',
-                       #     login_complete,
-                       #     name='openid-complete'),
                        url(r'', include('social_auth.urls')),
 
                        url(r'^profile/',

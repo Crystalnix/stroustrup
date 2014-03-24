@@ -12,6 +12,7 @@ class Migration(SchemaMigration):
         db.create_table(u'profile_library', (
             (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
             ('name', self.gf('django.db.models.fields.CharField')(max_length=30)),
+            ('domain', self.gf('django.db.models.fields.CharField')(default='', unique=True, max_length=30)),
         ))
         db.send_create_signal(u'profile', ['Library'])
 
@@ -54,6 +55,7 @@ class Migration(SchemaMigration):
     models = {
         u'profile.library': {
             'Meta': {'object_name': 'Library'},
+            'domain': ('django.db.models.fields.CharField', [], {'default': "''", 'unique': 'True', 'max_length': '30'}),
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'name': ('django.db.models.fields.CharField', [], {'max_length': '30'})
         },

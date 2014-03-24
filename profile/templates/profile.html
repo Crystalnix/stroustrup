@@ -167,7 +167,7 @@
                             <a href="{% url 'password_change' %}" class="btn btn-primary btn-lg">
                                 Change your password <span class="glyphicon glyphicon-lock"></span>
                             </a>
-                            {% if profile.get_profile.is_manager %}
+                            {% if profile.is_manager %}
                             <a href="{% url 'books:library_change' %}" class="btn btn-primary btn-lg">
                                 Change your library <span class="glyphicon glyphicon-lock"></span>
                             </a>

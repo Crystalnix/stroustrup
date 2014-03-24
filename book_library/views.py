@@ -104,6 +104,12 @@ class BookUpdate(ManagerOnlyView, UpdateView):
             return HttpResponseRedirect(reverse('books:list'))
         return super(BookUpdate, self).get(request, *args, **kwargs)
 
+    def post(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        if self.object.library != self.request.user.library:
+            return HttpResponseRedirect(reverse('books:list'))
+        return super(BookUpdate, self).post(request, *args, **kwargs)
+
     def form_valid(self, form):
         form.save(self.request.user.library)
         return HttpResponseRedirect(reverse("books:list"))
@@ -118,6 +124,12 @@ class DeleteBook(ManagerOnlyView, DeleteView):
             return HttpResponseRedirect(reverse('books:list'))
         context = self.get_context_data(object=self.object)
         return self.render_to_response(context)
+
+    def post(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        if self.object.library != self.request.user.library:
+            return HttpResponseRedirect(reverse('books:list'))
+        return self.delete(request, *args, **kwargs)
 
 @login_required
 def take_book_view(request, number, *args, **kwargs):
@@ -418,13 +430,9 @@ def library_change(request):
             if form.is_valid():
                 form.save()
                 return HttpResponseRedirect(post_change_redirect)
-            else:
-                context = {'form': form}
-                return TemplateResponse(request, template_name, context)
-        else:
-            form = profile_change_form(library=request.user.library)
-            context = {'form': form}
-            return TemplateResponse(request, template_name, context)
+        form = profile_change_form(library=request.user.library)
+        context = {'form': form}
+        return TemplateResponse(request, template_name, context)
     else:
         return HttpResponseRedirect(post_change_redirect)
 
@@ -442,12 +450,11 @@ class DeleteUserFromLibrary(ManagerOnlyView, DeleteView):
         context = self.get_context_data(object=self.object)
         return self.render_to_response(context)
 
-    # def delete(self, request, *args, **kwargs):
-    #     self.object = self.get_object()
-    #     success_url = self.get_success_url()
-    #     self.object.library = None
-    #     self.object.save()
-    #     return HttpResponseRedirect(success_url)
+    def post(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        if self.object.library != self.request.user.library or not self.request.user.is_manager:
+            return HttpResponseRedirect(reverse('books:users'))
+        return self.delete(request, *args, **kwargs)
 
 
 def add_permissions_for_user(request, **kwargs):
