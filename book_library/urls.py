@@ -42,8 +42,12 @@ urlpatterns = patterns('',
                            name='ask'),
 
                        url(r'^request/(?P<page>\d+)?/?$',
-                           requestBook.as_view(success_url='//', template_name='request_new.html'),
+                           requestBook.as_view(template_name='request_new.html'),
                            name='request'),
+
+                       url(r'^request/add/(?P<pk>\d+)/$',
+                           RequestBookSave.as_view(),
+                           name='request_add'),
 
                        url(r'like/(\d+)/$',
                            LikeRequest,
@@ -58,7 +62,7 @@ urlpatterns = patterns('',
                            name='rating'),
 
                        url(r'print/$',
-                           PrintQrCodesView.as_view(template_name="print_qr.html"),
+                           PrintQrCodesView.as_view(),
                            name='print'),
                        url(r'^library/$',
                            'book_library.views.library_change',

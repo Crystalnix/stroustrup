@@ -27,13 +27,14 @@
                                 <a  target="_blank" class="title" href='{{ order.url }}'>
                                     {{ order.title }}
                                 </a>
+                        <a type="button" class="btn btn-success pull-right" href="{% url "books:request_add" order.pk %}"> Add into library</a>
 
                     </div>
                     <div class="panel-body" >
 
                                 <div class="media">
                                     <div class="pull-left">
-                                      {% if order.book_image_url == None  %}
+                                      {% if order.book_image_url == ""  %}
                                             <img src="{% static 'image/no_book_cover.jpg' %}" width="150">
                                       {% else %}
                                             <img src='{{ order.book_image_url }}' width="150">
@@ -43,6 +44,8 @@
                                             <h4 class="media-heading">Title of book: {{ order.book_title }}</h4>
                                             <h4 class="media-heading">Author(s) of book: {{ order.book_authors }}</h4>
                                             <h4 class="media-heading">Price: {{ order.book_price }}</h4>
+                                            <h4 class="media-heading">Description:</h4>
+                                            <p> {{ order.book_description|safe }}</p>
 
                                       </div>
                                 </div>

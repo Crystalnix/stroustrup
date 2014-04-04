@@ -1,9 +1,7 @@
 from django.contrib import admin
 from book_library.models import Book, Author, Book_Tag, Book_Request, Request_Return
 from invitation.models import Invite
-
-
-
+from main.models import FileStorage
 
 class BooksInLine(admin.TabularInline):
     model = Book
@@ -45,10 +43,14 @@ class InviteAdmin(admin.ModelAdmin):
     list_display = ('email',)
 
 
+class FileStorageAdmin(admin.ModelAdmin):
+    model = FileStorage
+
 admin.site.register(Book, BookAdmin)
 admin.site.register(Author, AuthorAdmin)
 admin.site.register(Book_Tag, Book_TagAdmin)
 admin.site.register(Book_Request, Book_RequestAdmin) #SpaTedition
 admin.site.register(Request_Return, Request_ReturnAdmin)
 admin.site.register(Invite, InviteAdmin)
+admin.site.register(FileStorage, FileStorageAdmin)
 

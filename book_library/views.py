@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import json
 import math
 from django.http import HttpResponseRedirect, HttpResponse
@@ -7,7 +8,7 @@ from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.views.generic.edit import UpdateView, CreateView, DeleteView
 from django.views.generic import DetailView
-from django.core.urlresolvers import reverse
+from django.core.urlresolvers import reverse, reverse_lazy
 from django.core import mail
 from django.shortcuts import get_object_or_404, Http404
 from django.db.models import Q
@@ -17,12 +18,14 @@ from book_library.forms import *
 from book_library.models import *
 from profile.models import User
 from django_xhtml2pdf.utils import generate_pdf
-from urllib2 import urlopen
-from urlparse import urlparse
 from amazon.api import AmazonAPI
 from re import search
 from django.template.response import TemplateResponse
 from django.views.decorators.csrf import csrf_protect
+from django.db.models.signals import post_delete
+from urlparse import urlparse
+from parsers import book_shop_factory
+
 
 class StaffOnlyView(object):
     @method_decorator(user_passes_test(lambda u: u.is_staff))
@@ -271,6 +274,7 @@ class requestBook(PaginationMixin, AddRequestView, ListView): #SpaT_edition
     queryset = Book_Request.requests.order_by('-id')
     page = 1
     paginate_by = REQUEST_ON_PAGE
+    success_url = reverse_lazy("books:request")
 
     def get_context_data(self, **kwargs):
         context = {}
@@ -279,27 +283,9 @@ class requestBook(PaginationMixin, AddRequestView, ListView): #SpaT_edition
         return super(requestBook, self).get_context_data(**context)
 
     def form_valid(self, form):
-            url = form.data['url']
-            title = form.data['title']
-            start_str_http = 'http'
-            start_str_https = 'https'
-            if not url.startswith(start_str_http) and not url.startswith(start_str_https):
-                url = start_str_http+'://'+url
-            product_url = search('https?://www.amazon.[a-z]+\/[A-Za-z0-9-!$@&?%\(\)]+\/dp/([0-9A-Z]+)', url)
-            if product_url is not None:
-                    id_product = product_url.group(1)
-                    amazon = AmazonAPI(settings.AMAZON_ACCESS_KEY, settings.AMAZON_SECRET_KEY, settings.AMAZON_ASSOC_TAG)
-                    product = amazon.lookup(ItemId=id_product)
-                    authors = u", ".join(unicode(v) for v in product.authors)
-                    price = '{0} {1}'.format(product.price_and_currency[0], product.price_and_currency[1])
-                    Book_Request.requests.create(url=url, title=title, user=self.request.user,
-                                                 book_image_url=product.medium_image_url,
-                                                 book_title=product.title, book_authors=authors,
-                                                 book_price=price)
-                    return HttpResponseRedirect(reverse("books:request"))
-            else:
-                Book_Request.requests.create(url=url, title=title, user=self.request.user)
-                return HttpResponseRedirect(reverse("books:request"))
+            form.instance.author = self.request.user
+            self.object = form.save()
+            return HttpResponseRedirect(reverse("books:request"))
 
 
 def LikeRequest(request, number, *args): #SpaT_edition
@@ -403,6 +389,7 @@ def rating_post(request, *args, **kwargs):
 
 class PrintQrCodesView(ManagerOnlyView, FormView):
     form_class = PrintQRcodesForm
+    template_name = "print_qr.html"
 
     def get(self, request, *args, **kwargs):
         library = self.request.user.library
@@ -470,3 +457,25 @@ def add_permissions_for_user(request, **kwargs):
             user.is_manager = True
             user.save()
     return HttpResponseRedirect(reverse("profile:profile", args=kwargs['pk']))
+
+
+class RequestBookSave(BookAdd):
+    success_url = '/'
+    template_name = 'add_book.html'
+
+    def get_initial(self):
+        initial = super(RequestBookSave, self).get_initial()
+        initial = initial.copy()
+        try:
+            book = Book_Request.requests.get(pk=self.kwargs['pk'])
+            initial['title'] = book.book_title
+            initial['description'] = book.book_description
+            initial['authors_names'] = book.book_authors
+            return initial
+        except Book_Request.DoesNotExist:
+            return initial
+
+    def form_valid(self, form):
+        book = Book_Request.requests.get(pk=self.kwargs['pk'])
+        book.delete()
+        return super(RequestBookSave, self).form_valid(form)

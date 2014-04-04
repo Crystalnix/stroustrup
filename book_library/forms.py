@@ -6,6 +6,10 @@ from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Submit, Field
 from crispy_forms.bootstrap import PrependedText, InlineField, FormActions
 from book_library.models import Book, Book_Tag, Author, Book_Request, Book_Comment, Book_Rating, Library
+from crispy_forms.bootstrap import PrependedText, InlineField
+from book_library.models import Book, Book_Tag, Author, Book_Request, Book_Comment, Book_Rating
+from book_library.parsers import book_shop_factory
+
 
 
 class NameField(forms.CharField):
@@ -196,19 +200,30 @@ class Book_RequestForm(ModelForm): #SpaT_edition
 
     def clean_url(self):
         try:
-            urlopen(self.cleaned_data['url'])
+            urlopen_object = urlopen(self.cleaned_data['url'])
         except:
-            raise forms.ValidationError('This URL is not available.')
-        return self.cleaned_data['url']
-
-    def save(self, commit=True):   #Probably it's became useless
-        if self.cleaned_data['url'] and self.cleaned_data['title']:
-            _url = self.cleaned_data['url']
-            _title = self.cleaned_data['title']
-            req = Book_Request.requests.create(url=_url, title=_title)
-            return req
+            raise forms.ValidationError('This URL is unavailable.')
+        parser = book_shop_factory(urlopen_object.url)
+        if parser is None:
+            raise forms.ValidationError('This URL is incorrect. Use only the Amazon site and Ozon site.')
         else:
-            return super(Book_RequestForm, self).save(commit=True)
+            self.product = parser.parse(urlopen_object)
+            return self.cleaned_data['url']
+
+    def save(self, commit=True):
+        url = self.cleaned_data['url']
+        title = self.cleaned_data['title']
+        start_str_http = 'http'
+        start_str_https = 'https'
+        if not url.startswith(start_str_http) and not url.startswith(start_str_https):
+            url = '//'+url
+        if self.product is not None:
+            Book_Request.requests.create(url=url, title=title, user=self.instance.author,
+                                         book_image_url=self.product['book_image_url'],
+                                         book_title=self.product['title'], book_authors=self.product['authors'],
+                                         book_price=self.product['price'], book_description=self.product['description'])
+        else:
+            Book_Request.requests.create(url=url, title=title, user=self.instance.author)
 
 
 class Book_RatingForm(ModelForm):

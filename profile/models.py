@@ -6,6 +6,7 @@ import warnings
 from django.core.exceptions import ImproperlyConfigured
 from django.core.mail import send_mail
 from django.db import models
+from book_library.dbstorage import DatabaseStoragePostgres
 
 
 class Library(models.Model):
