@@ -71,8 +71,12 @@ urlpatterns = patterns('',
                            DeleteUserFromLibrary.as_view(template_name="delete_user_from_library.html"),
                            name='delete_user'),
 
-                       url(r'^library/(?P<pk>\d+)/permissions/$',
-                           'book_library.views.add_permissions_for_user',
-                           name='permissions_user')
+                       url(r'^library/(?P<pk>\d+)/permissions/add$',
+                           AddPermissionsUser.as_view(template_name="remove_add_permissions.html"),
+                           name='add_permissions_user'),
+
+                       url(r'^library/(?P<pk>\d+)/permissions/remove$',
+                           RemovePermissionsUser.as_view(template_name="remove_add_permissions.html"),
+                            name='remove_permissions_user')
 
                        )

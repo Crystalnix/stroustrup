@@ -24,12 +24,12 @@
     <div class="panel panel-default">
         <div class="panel-heading">
             <span class="glyphicon glyphicon-user"></span> <a class="title"> Profile </a>
-            {% if user.is_manager %}
+            {% if user.is_manager and user != profile %}
                 <div class="btn-group pull-right">
                 {% if profile.is_manager %}
-                        <a type="button" class="btn btn-danger " href="{% url "books:permissions_user" profile.id%}"> Remove permission of manager</a>
+                        <a type="button" class="btn btn-danger " href="{% url "books:remove_permissions_user" profile.id%}"> Remove permission of manager</a>
                 {% else %}
-                        <a type="button" class="btn btn-success " href="{% url "books:permissions_user" profile.id%}"> Add permission of manager</a>
+                        <a type="button" class="btn btn-success " href="{% url "books:add_permissions_user" profile.id%}"> Add permission of manager</a>
                 {% endif %}
             <a type="button" class="btn btn-danger " href="{% url "books:delete_user" profile.id%}">Delete from library</a>
                 </div>
@@ -63,7 +63,7 @@
                 <div class="media-body">
                     <h4 class="media-heading pull-left"> Username: {{ profile.email }}</h4>
                     <h4 class="media-heading pull-right"> Status:
-                        {% if profile.get_profile.is_manager %}
+                        {% if profile.is_manager %}
                             Manager
                         {% else %}
                             User

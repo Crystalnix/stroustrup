@@ -444,19 +444,42 @@ class DeleteUserFromLibrary(ManagerOnlyView, DeleteView):
         return self.delete(request, *args, **kwargs)
 
 
-def add_permissions_for_user(request, **kwargs):
-    try:
-        user = User.objects.get(pk=int(kwargs['pk']))
-    except User.DoesNotExist:
-        raise Http404
-    if request.user.is_manager and user.library == request.user.library:
-        if user.is_manager:
-            user.is_manager = False
-            user.save()
-        else:
-            user.is_manager = True
-            user.save()
-    return HttpResponseRedirect(reverse("profile:profile", args=kwargs['pk']))
+class AddPermissionsUser(DeleteUserFromLibrary):
+
+    def post(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        if self.object.library != self.request.user.library or not self.request.user.is_manager:
+            return HttpResponseRedirect(reverse('books:users'))
+        if not self.object.is_manager:
+            self.object.is_manager = True
+            self.object.save()
+        return HttpResponseRedirect(reverse("profile:profile", args=kwargs['pk']))
+
+
+class RemovePermissionsUser(AddPermissionsUser):
+
+    def post(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        if self.object.library != self.request.user.library or not self.request.user.is_manager:
+            return HttpResponseRedirect(reverse('books:users'))
+        if self.object.is_manager:
+            self.object.is_manager = False
+            self.object.save()
+        return HttpResponseRedirect(reverse("profile:profile", args=kwargs['pk']))
+
+# def add_permissions_for_user(request, **kwargs):
+#     try:
+#         user = User.objects.get(pk=int(kwargs['pk']))
+#     except User.DoesNotExist:
+#         raise Http404
+#     if request.method=='POST' and request.user.is_manager and user.library == request.user.library:
+#         if user.is_manager:
+#             user.is_manager = False
+#             user.save()
+#         else:
+#             user.is_manager = True
+#             user.save()
+#     return HttpResponseRedirect(reverse("profile:profile", args=kwargs['pk']))
 
 
 class RequestBookSave(BookAdd):
